@@ -1,0 +1,103 @@
+body {
+    font-family: sans-serif;
+
+    }
+    
+    h1 {
+    margin: 0%;
+    font-size: 30pt;
+    font-style: oblique ;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: whitesmoke ;
+    position: static;
+    left: 0;
+    top: 300;
+    width: 100%;
+    text-align: left;
+    }
+    h2 {
+        margin: 0%;
+        font-size: 15pt;
+        font-style: oblique 35deg;
+        position: fixed;
+        left: 0;
+        top: 200;
+        width: 100%;
+        text-align: left;
+        opacity: 0.5;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        color: whitesmoke ;
+
+    }
+    
+    footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    }
+
+    nav  {
+        position: fixed;
+        top: 20px;
+        right: 50px;
+        font-size: 20pt;
+        -ms-grid-column-align: center;
+        
+    }
+
+    nav tc {
+        /* border: 1px solid black; */
+        /* padding: 0em; */
+        padding-right: 1em;
+        padding-left: 1em;
+        margin:  1em;
+        margin-bottom: 0em;
+    }
+    
+    nav tc button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 5px 30px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-bottom-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+      a:link, a:visited {
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+      footer button {
+        background: gray;
+        border: none;
+        
+        text-align: center;
+        text-decoration-style: bold;
+        display: inline-block;
+        color: red;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      div{
+        position: relative;
+        top: 0px;
+        padding-top: 0px;
+        padding-bottom: 20pt;
+        border: black;  
+        border-style: solid;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom-width: 2px;
+        /* margin-top: -6pt ; */
+        margin: -6pt;
+        background-color: #252525;
+    
+      }
