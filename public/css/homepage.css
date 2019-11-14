@@ -159,6 +159,10 @@ input[type=text], [type=password], [type=email]{
   box-sizing: border-box;
 }
 
+ul.carousel li {
+  display: inline;
+}
+
 
 }
         
