@@ -45,10 +45,8 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.render('homepage.html')
-		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		await ctx.render('index')
+		await ctx.render('homepage')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
