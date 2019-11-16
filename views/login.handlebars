@@ -1,24 +1,52 @@
-
 <!doctype html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Log In</title>
-		<meta name="description" content="form to add new books">
-		<meta name="author" content="Mark Tyers">
-		<link href="css/style.css" type="text/css" rel="stylesheet" />
-	</head>
-	<body>
+
+<head>
+	<meta charset="utf-8">
+	<title>Log In</title>
+	<meta name="description" content="form to add new books">
+	<meta name="author" content="Mark Tyers">
+	<link href="css/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+	<header>
+		<section class="homepage">
+			<h1 class="homepage">
+                                <a href='/'>ExchangeBAY</a></h1>
+
+			<h2 class="homepage">Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
+
+			<nav class="homepage">
+				<tc><button>
+						<a href='login' target="_blank">Login</a>
+					</button></tc>
+				<tc><button><a href='register'>Register</a> </button> </tc>
+				<tc><button><a href="https://www.google.com">About</a> </button></tc>
+			</nav>
+
+		</section>
+	</header>
+
+	<section class="logForm">
 		<h1>Log In</h1>
 		{{#if msg}}
- 			<p class="msg">{{msg}}</p>
+		<p class="msg">{{msg}}</p>
 		{{/if}}
 		<form action="/login" method="post">
-			<p>Username:<br /><input type="text" name="user" placeholder="your username" value="{{user}}" autofocus></p>
+			<p>Username:<br /><input type="text" sname="user" placeholder="your username" value="{{user}}" autofocus>
+			</p>
 			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
 			<p><input type="submit" value="Log in"></p>
 		</form>
-		<p><a href="/register">register</a></p>
+
+
+		<p class="help"><a href="/register">Register</a>
+			<a href="problem.html">Trouble signing in?</a>
+			<a href="lostPassword.html">Forgot Password</a></p>
+	</section>
+
 	</body>
+
 </html>

@@ -45,10 +45,10 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.query.msg) data.msg = ctx.query.msg
+		
 		await ctx.render('homepage')
 	} catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('homepage', {message: err.message})
 	}
 })
 
