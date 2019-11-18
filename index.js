@@ -20,6 +20,7 @@ const mime = require('mime-types')
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
+const Listing = require('./modules/listing')
 
 const app = new Koa()
 const router = new Router()
@@ -67,18 +68,18 @@ router.get('/register', async ctx => await ctx.render('register'))
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
+	// call the functions in the listing module
+	const listing = await new Listing(dbName)
+
 	const parameters = ctx.params
+	try{
+		const data = await listing.getMetadata(parameters.id)
+		await ctx.render('listing', data)
+	}catch(err){
+		await ctx.render('homepage', {message: err.message})
+	}
 	
-	const data = {}
-	data.header = '<html> <head> <link rel="stylesheet" href="desc.css"> <title>{itemname} - ExchangeBay</title> </head> <body> <div id="head"> <img class="logo" src="https://via.placeholder.com/64" alt="logo"> <h1>ExchangeBay</h1> </div> <hr> '
-	data.footer = ''
-	data.itemname = 'Item'
-	data.itemdescription = 'Description'
-	data.swaplist = '1, 2, 3'
-	data.footer = 'Copyright</body></html>'
-	data.listerusername = 'Username'
-	data.imgloc = '/avatars/avatar.png';
-	await ctx.render('listing', data)
+	
 })
 
 
