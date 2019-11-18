@@ -45,12 +45,12 @@ class User {
 			if(forename.length === 0) throw new Error('missing forename')
 			if(surname.length === 0) throw new Error('missing surname')
 			if(email.length === 0) throw new Error('missing email')
-			let sql = `SELECT COUNT(id) as records FROM user WHERE username="${user}";`
-			const data = await this.db.get(sql)
-			if(data.records !== 0) throw new Error(`username "${user}" already in use`)
-			let sql = `SELECT COUNT(id) as records FROM user WHERE email="${email}";`
-			const data = await this.db.get(sql)
-			if(data.records !== 0) throw new Error(`email "${email}" already in use`)
+			let sqlUser = `SELECT COUNT(id) as records FROM user WHERE username="${user}";`
+			const dataUser = await this.db.get(sqlUser)
+			if(dataUser.records !== 0) throw new Error(`username "${user}" already in use`)
+			let sqlEmail = `SELECT COUNT(id) as records FROM user WHERE email="${email}";`
+			const dataEmail = await this.db.get(sqlEmail)
+			if(dataEmail.records !== 0) throw new Error(`email "${email}" already in use`)
 			pass = await bcrypt.hash(pass, saltRounds)
 			sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
 			await this.db.run(sql)
