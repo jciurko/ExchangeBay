@@ -33,7 +33,7 @@ app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handleb
 
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
-const dbName = 'website.db'
+const dbName = 'exchangebay.db'
 const saltRounds = 10
 
 /**
@@ -96,7 +96,7 @@ router.post('/register', koaBody, async ctx => {
 		const {path, type} = ctx.request.files.avatar
 		// call the functions in the module
 		const user = await new User(dbName)
-		await user.register(body.user, body.pass)
+		await user.register(body.user, body.pass, body.forename, body.surname, body.email)
 		// await user.uploadPicture(path, type)
 		// redirect to the home page
 		ctx.redirect(`/?msg=new user "${body.name}" added`)
