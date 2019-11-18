@@ -7,8 +7,16 @@ const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
-module.exports = class User {
+/** 
+ * Class that handles user operations.
+ * */
+class User {
 
+	/**
+     * Initialises database and adds 'users' table if it does not already exist
+     * @param {String} [dbName] - The name of the database. Defaults to :memory:
+     * @returns {User} New instance of User class
+     */
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
@@ -19,6 +27,13 @@ module.exports = class User {
 		})()
 	}
 
+	/**
+     * Register an user. This checks for existing entries for a given username
+     * @param {String} user - The username of the new user.
+     * @param {String} pass - The password of the new user.
+     * @returns {Boolean} True on success, throws an error error on failure
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
 	async register(user, pass) {
 		try {
 			if(user.length === 0) throw new Error('missing username')
@@ -35,13 +50,20 @@ module.exports = class User {
 		}
 	}
 
-	async uploadPicture(path, mimeType) {
+	/*async uploadPicture(path, mimeType) {
 		const extension = mime.extension(mimeType)
 		console.log(`path: ${path}`)
 		console.log(`extension: ${extension}`)
 		//await fs.copy(path, `public/avatars/${username}.${fileExtension}`)
-	}
+	}*/
 
+	/**
+     * Login an user.
+     * @param {String} username - The username of the new user.
+     * @param {String} password - The password of the new user.
+     * @returns {Boolean} True on success, throws an error error on failure
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
 	async login(username, password) {
 		try {
 			let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
@@ -57,4 +79,8 @@ module.exports = class User {
 		}
 	}
 
+}
+
+module.exports = {
+	User
 }
