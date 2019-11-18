@@ -61,6 +61,28 @@ router.get('/', async ctx => {
 router.get('/register', async ctx => await ctx.render('register'))
 
 /**
+ * The listing detail page.
+ *
+ * @name Listing Page
+ * @route {GET} /item/{id}
+ */
+router.get('/item/:id', async ctx => {
+	const parameters = ctx.params
+	
+	const data = {}
+	data.header = '<html> <head> <link rel="stylesheet" href="desc.css"> <title>{itemname} - ExchangeBay</title> </head> <body> <div id="head"> <img class="logo" src="https://via.placeholder.com/64" alt="logo"> <h1>ExchangeBay</h1> </div> <hr> '
+	data.footer = ''
+	data.itemname = 'Item'
+	data.itemdescription = 'Description'
+	data.swaplist = '1, 2, 3'
+	data.footer = 'Copyright</body></html>'
+	data.listerusername = 'Username'
+	data.imgloc = '/avatars/avatar.png';
+	await ctx.render('listing', data)
+})
+
+
+/**
  * The script to process new user registrations.
  *
  * @name Register Script
