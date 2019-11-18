@@ -14,6 +14,7 @@ class User {
 
 	/**
      * Initialises database and adds 'users' table if it does not already exist
+     * @constructor
      * @param {String} [dbName] - The name of the database. Defaults to :memory:
      * @returns {User} New instance of User class
      */
