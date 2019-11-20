@@ -74,7 +74,6 @@ class Listing {
      * @param {String} item_name - Name of the item being listed
      * @param {String} item_description - Description of the item listing
      * @param {String} img_location - Relative filepath from webroot to the item image
-     * @param {clCallback} Callback to receive listing ID
      * @returns {Integer} ID of new listing
      */
 	async create(user_id, item_name, item_description,  img_location) {
