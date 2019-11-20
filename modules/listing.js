@@ -68,6 +68,38 @@ class Listing {
 		}
 	}
 
+	/**
+     * Creates a listing and returns the listing ID. Does not check if the data is valid
+     * @param {Integer} user_id - The ID of the listing/item
+     * @param {String} item_name - Name of the item being listed
+     * @param {String} item_description - Description of the item listing
+     * @param {String} img_location - Relative filepath from webroot to the item image
+     * @param {clCallback} Callback to receive listing ID
+     * @returns {Integer} ID of new listing
+     */
+	async create(user_id, item_name, item_description,  img_location) {
+		try {
+
+			if(isNaN(user_id)){
+				throw new Error('non-numeric user_id provided')
+			}else if(user_id.toString().length == 0){
+				throw new Error('no user_id provided')
+			}else if(item_name.length == 0){
+				throw new Error('no item_name provided')
+			}else if(item_description.length == 0){
+				throw new Error('no item_description provided')
+			}else if(img_location.length == 0){
+				throw new Error('no img_location provided')
+			}
+
+			let sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${user_id}, '${item_name}', '${item_description}', '${img_location}');`
+			let query = await this.db.run(sql)
+			return query.lastID
+		} catch(err) {
+			throw err
+		}
+	}
+
 }
 
 module.exports = Listing
