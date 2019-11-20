@@ -49,12 +49,22 @@ describe('create()', () => {
 		expect.assertions(5)
 		const listing = await new Listing('exchangebay.db')
 		const listing_id = await listing.create(1, 'item_name', 'item_description', 'img_location')
+
 		const data = await listing.getMetadata(listing_id)
 		expect(data).toHaveProperty('itemname')
 		expect(data).toHaveProperty('itemdescription')
 		expect(data).toHaveProperty('imgloc')
 		expect(data).toHaveProperty('listerusername')
 		expect(data).toHaveProperty('swaplist')
+		done()
+			
+	})
+
+	test('create listing with no user_id', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.create('', 'item_name', 'item_description', 'img_location') )
+			.rejects.toEqual( Error('no user_id provided') )
 		done()
 	})
 
@@ -69,8 +79,7 @@ describe('create()', () => {
 	test('create listing with no item_description', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay.db')
-		const listing_id = await listing.create(1, 'item_name', '', 'img_location')
-		await expect( listing.getMetadata(-1) )
+		await expect( listing.create(1, 'item_name', '', 'img_location') )
 			.rejects.toEqual( Error('no item_description provided') )
 		done()
 	})
@@ -80,6 +89,14 @@ describe('create()', () => {
 		const listing = await new Listing('exchangebay.db')
 		await expect( listing.create(1, 'item_name', 'item_description', '') )
 			.rejects.toEqual( Error('no img_location provided') )
+		done()
+	})
+
+	test('create listing with non-numeric user_id', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.create('test', 'item_name', 'item_description', 'img_location') )
+			.rejects.toEqual( Error('non-numeric item_id provided') )
 		done()
 	})
 
