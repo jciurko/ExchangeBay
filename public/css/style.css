@@ -224,3 +224,73 @@ p.gdpr-notice {
     font-size: 0.5rem;
 }
 /* Listing styles end */
+
+/* Login styles start */
+
+#log-logo {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top : 10%;
+}
+
+#log-form>fieldset {
+	text-align: center;
+	width : 20%;
+	display: block;
+	margin-right : auto;
+	margin-left : auto;
+	margin-top : 15px;
+	
+	min-width: 200px;
+}
+
+#log-form>legend {
+	text-align: center;
+	font-family: "Arial", Arial, sans-serif;
+}
+
+#log-form input {
+	border-radius : 5px;
+	font-family: "Arial", Arial, sans-serif;
+	margin-top: 10px;
+	width: 80%;
+	height: 30px;
+	text-align: center;
+}
+
+#log-form input[type="submit"], input[type="button"]{
+	border: none;
+	font-weight: bold;
+}
+
+#log-form input[type="submit"]:hover{
+	background-color: #449d48;
+	cursor: pointer;
+}
+
+#log-form input[type="button"]:hover{
+	background-color: #bcbcbc;
+	cursor: pointer;
+}
+
+#log-form input[type="submit"] {
+	background-color: #4CAF50;
+	color : white;
+}
+
+#log-form a {
+	text-align: center;
+	margin : 3.5%;
+	color : blue;
+}
+
+#log-form a:hover {
+	cursor: pointer;
+}
+
+#log-form a:visited {
+  color: green;
+}
+
+/* Login styles end */
