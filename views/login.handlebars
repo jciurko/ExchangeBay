@@ -29,24 +29,24 @@
 		</section>
 	</header>
 
-	<section class="logForm">
-		<h1>Log In</h1>
-		{{#if msg}}
+	<img src="https://via.placeholder.com/150" alt="Logo" id="log-logo">
+	<br/>
+	{{#if msg}}
 		<p class="msg">{{msg}}</p>
-		{{/if}}
-		<form action="/login" method="post">
-			<p>Username:<br /><input type="text" sname="user" placeholder="your username" value="{{user}}" autofocus>
-			</p>
-			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
-			<p><input type="submit" value="Log in"></p>
-		</form>
+	{{/if}}
+	<form id="log-form" action="/login" method="post">
+		<fieldset>
+			<legend>Login to exchange bay</legend>
+			<input name="user" type="email" placeholder="Email Address"/><br/>
+			<input name="pass" type="password" placeholder="Password"/><br/>
+			<input type="submit" value="Login"/>
+			<input type="button" value="Register" onClick="javascript:window.location.href='register'"/>
+		</fieldset>
+	</form>
+	
+	<a href="problem">Trouble signing in?</a>
+	<a href="lostPassword">Forgot Password</a>
 
-
-		<p class="help"><a href="/register">Register</a>
-			<a href="problem.html">Trouble signing in?</a>
-			<a href="lostPassword.html">Forgot Password</a></p>
-	</section>
-
-	</body>
+</body>
 
 </html>
