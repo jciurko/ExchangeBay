@@ -62,6 +62,14 @@ router.get('/', async ctx => {
 router.get('/register', async ctx => await ctx.render('register'))
 
 /**
+ * The about page.
+ *
+ * @name About Page
+ * @route {GET} /about
+ */
+router.get('/about', async ctx => await ctx.render('about'))
+
+/**
  * The listing detail page.
  *
  * @name Listing Page
