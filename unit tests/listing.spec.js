@@ -43,60 +43,21 @@ describe('getMetadata()', () => {
 
 })
 
-describe('create()', () => {
+describe('getListings()', () => {
 
-	test('create listing with valid info', async done => {
-		expect.assertions(5)
-		const listing = await new Listing('exchangebay.db')
-		const listing_id = await listing.create(1, 'item_name', 'item_description', 'img_location')
-
-		const data = await listing.getMetadata(listing_id)
-		expect(data).toHaveProperty('itemname')
-		expect(data).toHaveProperty('itemdescription')
-		expect(data).toHaveProperty('imgloc')
-		expect(data).toHaveProperty('listerusername')
-		expect(data).toHaveProperty('swaplist')
-		done()
-			
-	})
-
-	test('create listing with no user_id', async done => {
+	test('get listings', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay.db')
-		await expect( listing.create('', 'item_name', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('no user_id provided') )
+		const all_listings = await listing.getListings()
+		expect(all_listings).not().toBe(null)
 		done()
 	})
 
-	test('create listing with no item_name', async done => {
+	test('no listings found', async done => {
 		expect.assertions(1)
-		const listing = await new Listing('exchangebay.db')
-		await expect( listing.create(1, '', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('no item_name provided') )
-		done()
-	})
-
-	test('create listing with no item_description', async done => {
-		expect.assertions(1)
-		const listing = await new Listing('exchangebay.db')
-		await expect( listing.create(1, 'item_name', '', 'img_location') )
-			.rejects.toEqual( Error('no item_description provided') )
-		done()
-	})
-
-	test('create listing with no img_location', async done => {
-		expect.assertions(1)
-		const listing = await new Listing('exchangebay.db')
-		await expect( listing.create(1, 'item_name', 'item_description', '') )
-			.rejects.toEqual( Error('no img_location provided') )
-		done()
-	})
-
-	test('create listing with non-numeric user_id', async done => {
-		expect.assertions(1)
-		const listing = await new Listing('exchangebay.db')
-		await expect( listing.create('test', 'item_name', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('non-numeric user_id provided') )
+		const listing = await new Listing()
+		await expect( listing.getListings() )
+			.rejects.toEqual( Error('no listings found') )
 		done()
 	})
 
