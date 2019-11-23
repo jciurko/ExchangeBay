@@ -24,10 +24,12 @@ class Listing {
 		})()
 	}
 
-	/** Metadata object used to render information in listing.handlebars
+	/** Object definition inspired by answer from Dan Dascalescu at https://stackoverflow.com/a/28763616
+	 * Metadata object used to render information in listing.handlebars
 	 * @typedef {Object} ListingMetadata
-	 * @property {String} itemname The X Coordinate
-	 * @property {String} itemdescription The Y Coordinate
+	 * @property {Integer} id The listing ID
+	 * @property {String} itemname The item name
+	 * @property {String} itemdescription The item description
 	 * @property {String} swaplist Comma separated list of items to swap
 	 * @property {String} listerusername Username of listing's creator
 	 * @property {String} imgloc Location of Listing's image
@@ -44,12 +46,13 @@ class Listing {
 			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item WHERE item_id="${listing_id}";`
 			const data = await this.db.get(listing_exists_sql)
 			if(data.records == 0) throw new Error(`listing with ID "${listing_id}" not found`)
-			let sql = `SELECT user_id, item_name, item_description, item_img_loc FROM item WHERE item_id="${listing_id}";`
+			let sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc FROM item WHERE item_id="${listing_id}";`
 			const record = await this.db.get(sql)
 			
 			let lister = record.user_id
 
 			let item = {
+				id: record.item_id,
 				itemname: record.item_name,
 				itemdescription: record.item_description,
 				imgloc: record.item_img_loc
@@ -78,7 +81,7 @@ class Listing {
 			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item;`
 			const data = await this.db.get(listing_exists_sql)
 			if(data.records == 0) throw new Error(`no listings found`)
-			let sql = `SELECT item_name, item_description, item_img_loc FROM item;`
+			let sql = `SELECT item_id, item_name, item_description, item_img_loc FROM item;`
 			let results = []
 			const record = await this.db.all(sql, function(err, rows) {
 				
@@ -89,6 +92,7 @@ class Listing {
 		        rows.forEach(function (row) {
 
 					let item = {
+						id: record.item_id,
 						itemname: record.item_name,
 						itemdescription: record.item_description,
 						imgloc: record.item_img_loc,

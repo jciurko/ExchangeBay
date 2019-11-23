@@ -6,9 +6,10 @@ const Listing = require('../modules/listing.js')
 describe('getMetadata()', () => {
 
 	test('get data from a valid listing', async done => {
-		expect.assertions(5)
+		expect.assertions(6)
 		const listing = await new Listing('exchangebay.db')
 		const data = await listing.getMetadata(1)
+		expect(data).toHaveProperty('id')
 		expect(data).toHaveProperty('itemname')
 		expect(data).toHaveProperty('itemdescription')
 		expect(data).toHaveProperty('imgloc')
@@ -46,11 +47,12 @@ describe('getMetadata()', () => {
 describe('create()', () => {
 
 	test('create listing with valid info', async done => {
-		expect.assertions(5)
+		expect.assertions(6)
 		const listing = await new Listing('exchangebay.db')
 		const listing_id = await listing.create(1, 'item_name', 'item_description', 'img_location')
 
 		const data = await listing.getMetadata(listing_id)
+		expect(data).toHaveProperty('id')
 		expect(data).toHaveProperty('itemname')
 		expect(data).toHaveProperty('itemdescription')
 		expect(data).toHaveProperty('imgloc')
@@ -131,9 +133,10 @@ describe('getListings()', () => {
 	test('get listings returns valid listings', async done => {
 		const listing = await new Listing('exchangebay.db')
 		const all_listings = await listing.getListings()
-		expect.assertions(1 + (all_listings.length * 5))
+		expect.assertions(1 + (all_listings.length * 6))
 		expect(all_listings).toBeInstanceOf(Array)
 		for(let i = 0; i < all_listings.length; i++){
+			expect(data).toHaveProperty('id')
 			expect(data).toHaveProperty('itemname')
 			expect(data).toHaveProperty('itemdescription')
 			expect(data).toHaveProperty('imgloc')
