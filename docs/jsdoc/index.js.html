@@ -66,18 +66,18 @@ const dbName = 'exchangebay.db'
 const saltRounds = 10
 
 /**
- * The secure home page.
+ * The home page.
  *
  * @name Home Page
  * @route {GET} /
- * @authentication This route requires cookie-based authentication.
  */
 router.get('/', async ctx => {
 	try {
-		
-		await ctx.render('homepage')
+		const listing = await new Listing(dbName)
+        let listings = await listing.getListings()
+        await ctx.render('homepage', {listings: listings})
 	} catch(err) {
-		await ctx.render('homepage', {message: err.message})
+		await ctx.render('homepage', {listings: []})
 	}
 })
 
@@ -90,24 +90,32 @@ router.get('/', async ctx => {
 router.get('/register', async ctx => await ctx.render('register'))
 
 /**
+ * The about page.
+ *
+ * @name About Page
+ * @route {GET} /about
+ */
+router.get('/about', async ctx => await ctx.render('about'))
+
+/**
  * The listing detail page.
  *
  * @name Listing Page
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
-	// call the functions in the listing module
-	const listing = await new Listing(dbName)
+    // call the functions in the listing module
+    const listing = await new Listing(dbName)
 
-	const parameters = ctx.params
-	try{
-		const data = await listing.getMetadata(parameters.id)
-		await ctx.render('listing', data)
-	}catch(err){
-		await ctx.render('homepage', {message: err.message})
-	}
-	
-	
+    const parameters = ctx.params
+    try{
+        const data = await listing.getMetadata(parameters.id)
+        await ctx.render('listing', data)
+    }catch(err){
+        await ctx.render('homepage', {message: err.message})
+    }
+    
+    
 })
 
 
@@ -118,44 +126,62 @@ router.get('/item/:id', async ctx => {
  * @route {POST} /register
  */
 router.post('/register', koaBody, async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		console.log(body)
-		const {path, type} = ctx.request.files.avatar
-		// call the functions in the module
-		const user = await new User(dbName)
-		await user.register(body.user, body.pass, body.forename, body.surname, body.email)
-		// await user.uploadPicture(path, type)
-		// redirect to the home page
-		ctx.redirect(`/?msg=new user "${body.name}" added`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
+    try {
+        // extract the data from the request
+        const body = ctx.request.body
+        console.log(body)
+        const {path, type} = ctx.request.files.avatar
+        // call the functions in the module
+        const user = await new User(dbName)
+        await user.register(body.user, body.pass, body.forename, body.surname, body.email)
+        // await user.uploadPicture(path, type)
+        // redirect to the home page
+        ctx.redirect(`/?msg=new user "${body.name}" added`)
+    } catch(err) {
+        await ctx.render('error', {message: err.message})
+    }
 })
 
+/**
+ * The login page.
+ *
+ * @name Login Page
+ * @route {GET} /login
+ */
 router.get('/login', async ctx => {
-	const data = {}
-	if(ctx.query.msg) data.msg = ctx.query.msg
-	if(ctx.query.user) data.user = ctx.query.user
-	await ctx.render('login', data)
+    const data = {}
+    if(ctx.query.msg) data.msg = ctx.query.msg
+    if(ctx.query.user) data.user = ctx.query.user
+    await ctx.render('login', data)
 })
 
+/**
+ * The script to process user logins.
+ *
+ * @name Login Script
+ * @route {POST} /login
+ */
 router.post('/login', async ctx => {
-	try {
-		const body = ctx.request.body
-		const user = await new User(dbName)
-		await user.login(body.user, body.pass)
-		ctx.session.authorised = true
-		return ctx.redirect('/?msg=you are now logged in...')
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
+    try {
+        const body = ctx.request.body
+        const user = await new User(dbName)
+        await user.login(body.user, body.pass)
+        ctx.session.authorised = true
+        return ctx.redirect('/?msg=you are now logged in...')
+    } catch(err) {
+        await ctx.render('error', {message: err.message})
+    }
 })
 
+/**
+ * The logout page/script.
+ *
+ * @name Logout Page
+ * @route {GET} /logout
+ */
 router.get('/logout', async ctx => {
-	ctx.session.authorised = null
-	ctx.redirect('/?msg=you are now logged out')
+    ctx.session.authorised = null
+    ctx.redirect('/?msg=you are now logged out')
 })
 
 app.use(router.routes())
@@ -170,13 +196,13 @@ module.exports = app.listen(port, async() => console.log(`listening on port ${po
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 20 2019 19:55:02 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Nov 23 2019 02:23:15 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
