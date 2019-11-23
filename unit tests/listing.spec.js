@@ -136,12 +136,12 @@ describe('getListings()', () => {
 		expect.assertions(1 + (all_listings.length * 6))
 		expect(all_listings).toBeInstanceOf(Array)
 		for(let i = 0; i < all_listings.length; i++){
-			expect(data).toHaveProperty('id')
-			expect(data).toHaveProperty('itemname')
-			expect(data).toHaveProperty('itemdescription')
-			expect(data).toHaveProperty('imgloc')
-			expect(data).toHaveProperty('listerusername')
-			expect(data).toHaveProperty('swaplist')
+			expect(all_listings[i]).toHaveProperty('id')
+			expect(all_listings[i]).toHaveProperty('itemname')
+			expect(all_listings[i]).toHaveProperty('itemdescription')
+			expect(all_listings[i]).toHaveProperty('imgloc')
+			expect(all_listings[i]).toHaveProperty('listerusername')
+			expect(all_listings[i]).toHaveProperty('swaplist')
 		}
 		done()
 	})

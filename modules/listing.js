@@ -83,29 +83,25 @@ class Listing {
 			if(data.records == 0) throw new Error(`no listings found`)
 			let sql = `SELECT item_id, item_name, item_description, item_img_loc FROM item;`
 			let results = []
-			const record = await this.db.all(sql, function(err, rows) {
-				
-				if(err){
-					throw new Error(`no listings found`)
+
+			const rows = await this.db.all(sql)
+
+			for(let i = 0; i < rows.length; i++){
+
+				let item = {
+					id: rows[i].item_id,
+					itemname: rows[i].item_name,
+					itemdescription: rows[i].item_description,
+					imgloc: rows[i].item_img_loc,
+					listerusername: "", //not viewable for logged out users
+					swaplist: "" //not viewable for logged out users
 				}
 
-		        rows.forEach(function (row) {
-
-					let item = {
-						id: record.item_id,
-						itemname: record.item_name,
-						itemdescription: record.item_description,
-						imgloc: record.item_img_loc,
-						listerusername: "", //not viewable for logged out users
-						swaplist: "" //not viewable for logged out users
-					}
-
-					results.push(item)
-
-		        })
-			})
+				results.push(item)
+			}
 
 			return results
+
 		} catch(err) {
 			throw err
 		}
