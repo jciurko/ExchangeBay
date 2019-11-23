@@ -45,11 +45,19 @@ describe('getMetadata()', () => {
 
 describe('getListings()', () => {
 
-	test('get listings', async done => {
+	test('get listings returns not null', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay.db')
 		const all_listings = await listing.getListings()
-		expect(all_listings).not().toBe(null)
+		expect(all_listings).not().toBeNull()
+		done()
+	})
+
+	test('get listings returns array', async done => {
+		expect.assertions(2)
+		const listing = await new Listing('exchangebay.db')
+		const all_listings = await listing.getListings()
+		expect(all_listings).toBeInstanceOf(Array)
 		done()
 	})
 
