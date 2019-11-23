@@ -96,7 +96,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay.db')
 		await expect( listing.create('test', 'item_name', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('non-numeric item_id provided') )
+			.rejects.toEqual( Error('non-numeric user_id provided') )
 		done()
 	})
 
