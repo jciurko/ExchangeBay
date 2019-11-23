@@ -104,6 +104,17 @@ section.homepage {
     background-color: #252525;
 }
 
+img.slider-thumbnail{
+    height: 128px;
+    width: 128px;
+    border: 1px solid black;
+    border-radius: 5%;
+}
+
+.slide p, .slide h4 {
+    color: black;
+}
+
 section.reg-form,
 section.logForm {
     text-align: center;

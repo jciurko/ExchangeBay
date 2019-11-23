@@ -50,16 +50,18 @@
                 </button>
                        
                 <ul class="carousel">
-                             <li class="slide">
-                                <a href="https://placeholder.com"><img src="https://via.placeholder.com/300x150"></a>
-                             </li>   
-                             <li class="slide">
-                                        <a href="https://placeholder.com"><img src="https://via.placeholder.com/300x150"></a>
-                             </li>  
-                             <li class="slide">
-                                        <a href="https://placeholder.com"><img src="https://via.placeholder.com/300x150"></a>
-                             </li>  
-                        </ul>
+
+                {{#each listings}}
+                    <li class="slide">
+                        <a href="/item/{{this.id}}">
+                            <img class="slider-thumbnail" src="/{{this.imgloc}}">
+                            <h4>{{this.itemname}}</h4>
+                            <p>{{this.itemdescription}}</p>
+                        </a>
+                    </li>
+                {{/each}}
+
+                </ul>
                 
                 <button class="carousel_button">
                                 <img src="homepage_placeholders/right.jpg" alt="">
