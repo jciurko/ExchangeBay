@@ -38,18 +38,18 @@ const dbName = 'exchangebay.db'
 const saltRounds = 10
 
 /**
- * The secure home page.
+ * The home page.
  *
  * @name Home Page
  * @route {GET} /
- * @authentication This route requires cookie-based authentication.
  */
 router.get('/', async ctx => {
 	try {
-		
-		await ctx.render('homepage')
+		const listing = await new Listing(dbName)
+        let listings = await listing.getListings()
+        await ctx.render('homepage', {listings: listings})
 	} catch(err) {
-		await ctx.render('homepage', {message: err.message})
+		await ctx.render('homepage', {listings: []})
 	}
 })
 
