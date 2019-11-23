@@ -69,6 +69,45 @@ class Listing {
 	}
 
 	/**
+     * Gets the metadata object literal for all listings in an array
+     * @returns {Array} Array of ListingMetadata object literals
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
+	async getListings() {
+		try {
+			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item;`
+			const data = await this.db.get(listing_exists_sql)
+			if(data.records == 0) throw new Error(`no listings found`)
+			let sql = `SELECT item_name, item_description, item_img_loc FROM item;`
+			let results = []
+			const record = await this.db.all(sql, function(err, rows) {
+				
+				if(err){
+					throw new Error(`no listings found`)
+				}
+
+		        rows.forEach(function (row) {
+
+					let item = {
+						itemname: record.item_name,
+						itemdescription: record.item_description,
+						imgloc: record.item_img_loc,
+						listerusername: "", //not viewable for logged out users
+						swaplist: "" //not viewable for logged out users
+					}
+
+					results.push(item)
+
+		        })
+			})
+
+			return results
+		} catch(err) {
+			throw err
+		}
+	}
+
+	/**
      * Creates a listing and returns the listing ID. Does not check if the data is valid
      * @param {Integer} user_id - The ID of the listing/item
      * @param {String} item_name - Name of the item being listed
