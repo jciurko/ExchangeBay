@@ -19,6 +19,29 @@ Your private repository on GitHub will now contain a complete copy of this templ
 
 Clone your private repository
 
-Change your [local config settings](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). This is a vital step otherwise your commits won't show on the GitHub _graph_ and your grade will be affected.
+## Local Config Settings
+
+Before you make any commits you need to update the [local config settings](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). Start by using the Terminal (or Git Bash on Windows) navigate inside the project. Once you are in this directory run the following commands, substituting you name as it appears on your ID badge and your university email address (without the `uni.` domain prefix).
+
+```bash
+git config user.name 'John Doe'
+git config user.email 'doej@coventry.ac.uk'
+git config core.hooksPath .githooks
+git config --add merge.ff false
+```
 
 Start working on the assignment. Remember to install all the dependencies listed in the `package.json` file.
+
+## Feature Branching
+
+You should not be committing directly to the **master** branch, instead each task or activity you complete should be in its own _feature branch_. You should following the following steps:
+
+1. Log onto GitHub and add an issue to the _issue tracker_, this is your _todo_list.
+2. Create a local feature branch making sure that the name of the branch includes both the issue _number_ and _title_ (in lower case).
+    1. For example: `git checkout -b iss023/fix-login-bug`.
+3. When the task is complete and all the tests pass, push the feature branch to GitHub.
+    1. For example `git push origin iss023/fix-login-bug` would push the branch named above.
+    2. Switch back to the _master_ branch with `git checkout master`.
+4. Back on GitHub raise a **Pull Request** that merges this feature branch to the _master_ branch.
+5. If there are no issues you can then merge the branch using the button in the _Pull Request_ interface.
+6. Pull the latest version of the master branch code using `git pull origin master`.
