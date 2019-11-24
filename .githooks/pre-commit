@@ -5,16 +5,17 @@ echo
 echo "PRE-COMMIT"
 
 EMAIL=$(git config user.email)
-echo "Your registered email is currently '$EMAIL'"
 
 if [[ $EMAIL != *"@coventry.ac.uk" ]]; then
   echo "  invalid config settings"
+  echo "  Your registered email is currently '$EMAIL'"
   echo "  please run the following git commands:"
   echo "    $ git config user.email xxx@coventry.ac.uk"
   echo "    $ git config user.name 'zzz'"
   echo "  where 'xxx' is your university username"
   echo "  and 'zzz' is your name as it appears on your university ID badge"
-  return 1
+  echo
+  exit 1
 fi
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
