@@ -11,23 +11,10 @@ PROTECTED_BRANCH="master"
 # Remote
 REMOTE=""
 
-if [ -n "$1" ]; then
-    echo "1: ${1}"
-fi
-if [ -n "$2" ]; then
-    echo "1: ${2}"
-fi
-if [ -n "$3" ]; then
-    echo "1: ${3}"
-fi
-if [ -n "$4" ]; then
-    echo "1: ${4}"
-fi
-
 # Check for merges
 if [[ $2 != 'merge' ]]; then
     # Not a merge
-    ECHO "not a merge"
+    ECHO "  not a merge"
     exit 0
 fi
 
@@ -38,13 +25,13 @@ echo CURRENT_BRANCH
 # Check if in PROTECTED_BRANCH
 if [[ "$CURRENT_BRANCH" != "$PROTECTED_BRANCH" ]]; then
     # Not in PROTECTED_BRANCH: can proceed
-    ECHO "not in the ${PROTECTED_BRANCH} branch"
+    ECHO "  not in the ${PROTECTED_BRANCH} branch"
     exit 0
 fi
 
-echo "you are trying to merge the ${CURRENT_BRANCH} branch into the ${PROTECTED_BRANCH} branch"
-echo "merging branches to master must be done by creating a pull request"
-echo "this merge has been cancelled however you will need to"
-echo "reset the operation before continuing by running git reset --merge"
+echo "  you are trying to merge the ${CURRENT_BRANCH} branch into the ${PROTECTED_BRANCH} branch"
+echo "  merging branches to master must be done by creating a pull request"
+echo "  this merge has been cancelled however you will need to"
+echo "  reset the operation before continuing by running git reset --merge"
 
 exit 1

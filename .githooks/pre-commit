@@ -5,11 +5,11 @@ echo "running the 'pre-commit' script"
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
-echo "you are trying to commit to the '$branch' branch"
+echo "  you are trying to commit to the '$branch' branch"
 
 if [ "$branch" = "master" ]; then
-  echo "  you can't commit directly to the master branch"
-  echo "  create a local feature branch first"
+  echo "    you can't commit directly to the master branch"
+  echo "    create a local feature branch first"
   exit 1
 fi
 
