@@ -5,18 +5,16 @@ echo
 echo "PRE-COMMIT"
 
 EMAIL=$(git config user.email)
-echo $EMAIL
+echo "Your registered email is currently '$EMAIL'"
 
 if [[ $EMAIL != *"@coventry.ac.uk" ]]; then
   echo "  invalid config settings"
-  echo "  please input your university username:"
-  read username
-  echo "    you entered $username"
-  git config user.email $username@coventry.ac.uk
-  echo "  please input your name as it appears on your student ID card:"
-  read name
-  echo "    you entered $name"
-  git config user.name '$name'
+  echo "  please run the following git commands:"
+  echo "    $ git config user.email xxx@coventry.ac.uk"
+  echo "    $ git config user.name 'zzz'"
+  echo "  where 'xxx' is your university username"
+  echo "  and 'zzz' is your name as it appears on your university ID badge"
+  return 1
 fi
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
