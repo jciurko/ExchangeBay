@@ -2,4 +2,28 @@
 
 set -e # using the options command to abort script at first error
 echo "running the 'pre-commit' script"
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+echo "you are trying to commit to the '$branch' branch"
+
+if [ "$branch" = "master" ]; then
+  echo "  You can't commit directly to the master branch"
+  exit 1
+fi
+
+# check for valid branch name:
+
+# valid_branch_regex="^iss\d{3}\/[a-z\-]+$"
+
+# if [[ ! $local_branch =~ $valid_branch_regex ]]
+# then
+#     echo "invalid branch name"
+#     echo "  format is: 'iss000/issue-name'"
+#     echo "  replacing '000' with the issue number and 'issue-name' with the issue name"
+#     echo "  only lower-case letters and replace spaces in the issue name with dashes"
+#     echo "  rename your branch and try again"
+#     exit 1
+# fi
+
 ./node_modules/.bin/eslint .
