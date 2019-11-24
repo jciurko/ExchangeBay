@@ -20,7 +20,7 @@ fi
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
-echo "  you are trying to commit to the '$branch' branch"
+echo "  attempting to commit to the '$branch' branch"
 
 if [ "$branch" = "master" ]; then
   echo "    you can't commit directly to the master branch"
@@ -43,3 +43,5 @@ fi
 # fi
 
 ./node_modules/.bin/eslint .
+
+echo "  commit successful..."
