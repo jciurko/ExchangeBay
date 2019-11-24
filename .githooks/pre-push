@@ -1,6 +1,7 @@
 #!/bin/sh
 
-echo "running the 'pre-push' hook"
+echo
+echo "PRE-PUSH"
 
 protected_branch='master'
 current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')

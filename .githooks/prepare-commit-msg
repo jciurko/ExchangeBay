@@ -3,7 +3,8 @@
 # With thanks to Sergio Vaccaro <sergio.vaccaro@istat.it>
 
 set -e # using the options command to abort script at first error
-echo "running the 'prepare-commit-msg' script"
+echo
+echo "PREPARE-COMMIT-MSG"
 
 # Branch to protect
 PROTECTED_BRANCH="master"
