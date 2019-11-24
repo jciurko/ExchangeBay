@@ -39,6 +39,7 @@ You should not be committing directly to the **master** branch, instead each tas
 1. Log onto GitHub and add an issue to the _issue tracker_, this is your _todo_list.
 2. Create a local feature branch making sure that the name of the branch includes both the issue _number_ and _title_ (in lower case).
     1. For example: `git checkout -b iss023/fix-login-bug`.
+    2. You can see a list of all the local branches using `git branch`.
 3. When the task is complete and all the tests pass, push the feature branch to GitHub.
     1. For example `git push origin iss023/fix-login-bug` would push the branch named above.
     2. Switch back to the _master_ branch with `git checkout master`.
