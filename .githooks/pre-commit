@@ -8,7 +8,8 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 echo "you are trying to commit to the '$branch' branch"
 
 if [ "$branch" = "master" ]; then
-  echo "  You can't commit directly to the master branch"
+  echo "  you can't commit directly to the master branch"
+  echo "  create a local feature branch first"
   exit 1
 fi
 
