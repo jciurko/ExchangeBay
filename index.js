@@ -39,12 +39,14 @@ const port = process.env.PORT || defaultPort
 const dbName = 'exchangebay.db'
 const saltRounds = 10
 
-const authorised = true;
-const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'))
-const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'))
-handlebars.registerPartial('header', header)
-handlebars.registerPartial('footer', footer)
-handlebars.registerHelper('authorised', authorised)
+const authorised = false;
+const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
+handlebars.registerPartial('header', header);
+const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'));
+handlebars.registerPartial('footer', footer);
+const dPage = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\default_page.handlebars`).toString('utf-8'));
+handlebars.registerPartial('default_page', dPage);
+handlebars.registerHelper('authorised', authorised);
 
 
 
@@ -56,11 +58,11 @@ handlebars.registerHelper('authorised', authorised)
  */
 router.get('/', async ctx => {
     try {
-        const listing = await new Listing(dbName)
-        let listings = await listing.getListings()
-        await ctx.render('homepage', { listings: listings })
+        const listing = await new Listing(dbName);
+        let listings = await listing.getListings();
+        await ctx.render('homepage', { listings: listings, authorised });
     } catch (err) {
-        await ctx.render('homepage', { listings: [] })
+        await ctx.render('homepage', { listings: [] });
     }
 })
 

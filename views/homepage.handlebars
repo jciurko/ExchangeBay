@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 	<head>
                 <title>Now you can make the worst deals ever</title>
@@ -7,56 +6,15 @@
                 <meta charset="utf-8">
                 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
                 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-               
-                                
-                
-                <meta name="description" content="The HTML5 Template">
-        <meta name="author" content="Joe Bloggs">
-        <link href="css/style.css" type="text/css" rel="stylesheet" />
+                <meta name="ExchangeBAY" content="Homepage">
+                <meta name="author" content="Joe Bloggs">
+                <link href="css/style.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
-                {{> header}}
-
-        
-        
-                <h2>Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
-
-                <p>Exchange bay is an item for item exchange. 
-                It works simply by bidding on a sellers item with an item of your own instead of money. 
-                If the seller accepts the trade then congratulations on a sucessful trade
-                </p>
-
-                <section>
-
-                        <p>Items you may be interested in</p>
-
-                <button class="carousel_button">
-                                <img src="homepage_placeholders/left.jpg" alt="">
-                </button>
-                       
-                <ul class="carousel">
-
-                {{#each listings}}
-                    <li class="slide">
-                        <a href="/item/{{this.id}}">
-                            <img class="slider-thumbnail" src="/{{this.imgloc}}">
-                            <h4>{{this.itemname}}</h4>
-                            <p>{{this.itemdescription}}</p>
-                        </a>
-                    </li>
-                {{/each}}
-
-                </ul>
-                
-                <button class="carousel_button">
-                                <img src="homepage_placeholders/right.jpg" alt="">
-                </button>
-
-                </section>
-
-        
+                <header>        {{> header}}    </header>
+                {{#if authorised}}
+                {{/if}}
+                {{> default_page}}
         </body>
-        <footer >{{> footer}}
-
-        </footer>
+        <footer >       {{> footer}}        </footer>
 </html>
