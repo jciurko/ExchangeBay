@@ -11,12 +11,14 @@ const Router = require('koa-router')
 const views = require('koa-views')
 const staticDir = require('koa-static')
 const bodyParser = require('koa-bodyparser')
-const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
+const koaBody = require('koa-body')({ multipart: true, uploadDir: '.' })
 const session = require('koa-session')
 const sqlite = require('sqlite-async')
 const fs = require('fs-extra')
 const mime = require('mime-types')
-//const jimp = require('jimp')
+    //const jimp = require('jimp')
+const handlebars = require('handlebars')
+
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
@@ -30,12 +32,21 @@ app.keys = ['darkSecret']
 app.use(staticDir('public'))
 app.use(bodyParser())
 app.use(session(app))
-app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}))
+app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, { map: { handlebars: 'handlebars' } }))
 
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
 const dbName = 'exchangebay.db'
 const saltRounds = 10
+
+const authorised = true;
+const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'))
+const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'))
+handlebars.registerPartial('header', header)
+handlebars.registerPartial('footer', footer)
+handlebars.registerHelper('authorised', authorised)
+
+
 
 /**
  * The home page.
@@ -44,13 +55,13 @@ const saltRounds = 10
  * @route {GET} /
  */
 router.get('/', async ctx => {
-	try {
-		const listing = await new Listing(dbName)
+    try {
+        const listing = await new Listing(dbName)
         let listings = await listing.getListings()
-        await ctx.render('homepage', {listings: listings})
-	} catch(err) {
-		await ctx.render('homepage', {listings: []})
-	}
+        await ctx.render('homepage', { listings: listings })
+    } catch (err) {
+        await ctx.render('homepage', { listings: [] })
+    }
 })
 
 /**
@@ -80,14 +91,14 @@ router.get('/item/:id', async ctx => {
     const listing = await new Listing(dbName)
 
     const parameters = ctx.params
-    try{
+    try {
         const data = await listing.getMetadata(parameters.id)
         await ctx.render('listing', data)
-    }catch(err){
-        await ctx.render('homepage', {message: err.message})
+    } catch (err) {
+        await ctx.render('homepage', { message: err.message })
     }
-    
-    
+
+
 })
 
 
@@ -102,15 +113,15 @@ router.post('/register', koaBody, async ctx => {
         // extract the data from the request
         const body = ctx.request.body
         console.log(body)
-        const {path, type} = ctx.request.files.avatar
-        // call the functions in the module
+        const { path, type } = ctx.request.files.avatar
+            // call the functions in the module
         const user = await new User(dbName)
         await user.register(body.user, body.pass, body.forename, body.surname, body.email)
-        // await user.uploadPicture(path, type)
-        // redirect to the home page
+            // await user.uploadPicture(path, type)
+            // redirect to the home page
         ctx.redirect(`/?msg=new user "${body.name}" added`)
-    } catch(err) {
-        await ctx.render('error', {message: err.message})
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
     }
 })
 
@@ -122,8 +133,8 @@ router.post('/register', koaBody, async ctx => {
  */
 router.get('/login', async ctx => {
     const data = {}
-    if(ctx.query.msg) data.msg = ctx.query.msg
-    if(ctx.query.user) data.user = ctx.query.user
+    if (ctx.query.msg) data.msg = ctx.query.msg
+    if (ctx.query.user) data.user = ctx.query.user
     await ctx.render('login', data)
 })
 
@@ -140,8 +151,8 @@ router.post('/login', async ctx => {
         await user.login(body.user, body.pass)
         ctx.session.authorised = true
         return ctx.redirect('/?msg=you are now logged in...')
-    } catch(err) {
-        await ctx.render('error', {message: err.message})
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
     }
 })
 
