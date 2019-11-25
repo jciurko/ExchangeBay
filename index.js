@@ -2,12 +2,12 @@
 
 //Routes File
 
-'use strict'
+'use strict';
 
 /* MODULE IMPORTS */
 
 // -- UNUSED MODULE -- \\
-const bcrypt = require('bcrypt-promise')
+const bcrypt = require('bcrypt-promise');
 
 const Koa = require('koa');
 const Router = require('koa-router');
@@ -31,7 +31,7 @@ const app = new Koa();
 const router = new Router();
 
 /* CONFIGURING THE MIDDLEWARE */
-app.keys = ['darkSecret']
+app.keys = ['darkSecret'];
 app.use(staticDir('public'));
 app.use(bodyParser());
 app.use(session(app));
@@ -56,7 +56,7 @@ router.get('/', async ctx => {
 	} catch(err) {
 		await ctx.render('homepage', {listings: []});
 	}
-})
+});
 
 /**
  * The user registration page.
@@ -93,7 +93,7 @@ router.get('/item/:id', async ctx => {
 	}
     
     
-})
+});
 
 
 /**
@@ -159,7 +159,7 @@ router.post('/login', async ctx => {
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null;
 	ctx.redirect('/?msg=you are now logged out');
-})
+});
 
-app.use(router.routes())
+app.use(router.routes());
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`));
