@@ -55,8 +55,7 @@ class User {
             pass = await bcrypt.hash(pass, saltRounds)
             let sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
             await this.db.run(sql)
-            await this.db.close()
-
+            return true
         } catch (err) {
             throw err
         }
