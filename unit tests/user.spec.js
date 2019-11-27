@@ -8,7 +8,7 @@ describe('register()', () => {
 	test('register a valid account', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		const register = await account.register('doej', 'password')
+		const register = await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		expect(register).toBe(true)
 		done()
 	})
@@ -16,8 +16,8 @@ describe('register()', () => {
 	test('register a duplicate username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.register('doej', 'password') )
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		await expect( account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com') )
 			.rejects.toEqual( Error('username "doej" already in use') )
 		done()
 	})
@@ -26,7 +26,7 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('', 'password') )
-			.rejects.toEqual( Error('missing username') )
+			.rejects.toEqual( Error('Username can\'t be empty') )
 		done()
 	})
 
@@ -34,42 +34,37 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('doej', '') )
-			.rejects.toEqual( Error('missing password') )
+			.rejects.toEqual( Error('Password can\'t be empty') )
 		done()
 	})
 
-})
-
-describe('uploadPicture()', () => {
-	// this would have to be done by mocking the file system
-	// perhaps using mock-fs?
 })
 
 describe('login()', () => {
 	test('log in with valid credentials', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		const valid = await account.login('doej', 'password')
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		const valid = await account.login('johndoe@email.com', 'password')
 		expect(valid).toBe(true)
 		done()
 	})
 
-	test('invalid username', async done => {
+	test('invalid email', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.login('roej', 'password') )
-			.rejects.toEqual( Error('username "roej" not found') )
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		await expect( account.login('johnroe@email.com', 'password') )
+			.rejects.toEqual( Error('email "johnroe@email.com" not found') )
 		done()
 	})
 
 	test('invalid password', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.login('doej', 'bad') )
-			.rejects.toEqual( Error('invalid password for account "doej"') )
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		await expect( account.login('johndoe@email.com', 'bad') )
+			.rejects.toEqual( Error('invalid password for account "johndoe@email.com"') )
 		done()
 	})
 
