@@ -169,7 +169,10 @@ router.post('/login', async ctx => {
 router.get('/logout', async ctx => {
     authorised = ctx.session.authorised = null
     ctx.redirect('/?msg=you are now logged out')
+    console.log(authorised)
 })
+
+
 
 router.get('/createAnOffer', async ctx => {
     try {
