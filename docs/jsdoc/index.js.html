@@ -69,13 +69,13 @@ const saltRounds = 10
 
 var user_id, username, forename, surname, email;
 var authorised;
-const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
+const header = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
-const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'));
+const footer = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/footer.handlebars`).toString('utf-8'));
 handlebars.registerPartial('footer', footer);
-const dPage = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\default_page.handlebars`).toString('utf-8'));
+const dPage = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/default_page.handlebars`).toString('utf-8'));
 handlebars.registerPartial('default_page', dPage);
-const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\loggedInHeader.handlebars`).toString('utf-8'));
+const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/loggedInHeader.handlebars`).toString('utf-8'));
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
 
 handlebars.registerHelper('authorised', authorised);
@@ -197,20 +197,25 @@ router.post('/login', async ctx => {
             await ctx.render('error', { message: err.message })
         }
     })
-    /**
-     * The logout page/script.
-     *
-     * @name Logout Page
-     * @route {GET} /logout
-     */
+
+/**
+ * The logout page/script.
+ *
+ * @name Logout Page
+ * @route {GET} /logout
+ */
 router.get('/logout', async ctx => {
     authorised = ctx.session.authorised = null;
     email = ctx.session.user = null;
     ctx.redirect('/?msg=you are now logged out')
 })
 
-
-
+/**
+ * The offer creation page.
+ *
+ * @name Offer creation Page
+ * @route {GET} /createAnOffer
+ */
 router.get('/createAnOffer', async ctx => {
     try {
         if (authorised !== true) throw new Error('You must log in');
@@ -220,20 +225,33 @@ router.get('/createAnOffer', async ctx => {
     }
 })
 
+/**
+ * The offer creation script.
+ *
+ * @name Offer creation Page
+ * @route {POST} /createAnOffer
+ */
 router.post('/createAnOffer', koaBody, async ctx => {
     try {
         const body = ctx.request.body
         console.log(typeof user_id)
         const { path, type } = ctx.request.files.item_img
         const listing = await new Listing(dbName)
-        await fs.copy(path, `public/database_images/${body.username}\'s${body.item_name}.png`)
-        await listing.create(user_id, body.item_name, body.item_description, `public/database_images/${body.item_name}.png`)
-        ctx.redirect(`/?msg=new user "${body.name}" added`)
+        const filename = `database_images/${body.username}s${body.item_name}.png`
+        await fs.copy(path, `public/${filename}`)
+        await listing.create(user_id, body.item_name, body.item_description, filename)
+        ctx.redirect(`/?msg=new listing "${body.name}" added`)
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
 })
 
+/**
+ * The account page.
+ *
+ * @name Account Page
+ * @route {GET} /accountPage
+ */
 router.get('/accountPage', async ctx => {
     try {
         email = ctx.session.email
@@ -244,7 +262,6 @@ router.get('/accountPage', async ctx => {
         username = userData.username
         forename = userData.forename
         surname = userData.surname
-        console.log(typeof user_id)
         return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
 
     } catch (err) {
@@ -267,13 +284,13 @@ module.exports = app.listen(port, async() => console.log(`listening on port ${po
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Account Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Offer creation Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 23:26:52 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 23:55:25 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

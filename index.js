@@ -218,6 +218,12 @@ router.post('/createAnOffer', koaBody, async ctx => {
     }
 })
 
+/**
+ * The account page.
+ *
+ * @name Account Page
+ * @route {GET} /accountPage
+ */
 router.get('/accountPage', async ctx => {
     try {
         email = ctx.session.email
