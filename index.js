@@ -95,7 +95,6 @@ router.get('/about', async ctx => await ctx.render('about'))
 router.get('/item/:id', async ctx => {
     // call the functions in the listing module
     const listing = await new Listing(dbName)
-
     const parameters = ctx.params
     try {
         const data = await listing.getMetadata(parameters.id)
@@ -118,7 +117,6 @@ router.post('/register', koaBody, async ctx => {
     try {
         // extract the data from the request
         const body = ctx.request.body
-        console.log(body)
         const { path, type } = ctx.request.files.avatar
             // call the functions in the module
         const user = await new User(dbName)
