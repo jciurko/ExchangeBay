@@ -90,6 +90,14 @@ class User {
             throw err
         }
     }
+    async getUserData(email) {
+        try {
+            let sql = `SELECT * FROM user WHERE email= "${email}";`
+            const record = await this.db.get(sql)
+            return record
+        } catch (err) {
+            throw err
+        }
+    }
 }
-
 module.exports = User

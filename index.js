@@ -39,6 +39,7 @@ const port = process.env.PORT || defaultPort
 const dbName = 'exchangebay.db'
 const saltRounds = 10
 
+var user_id, username, forename, surname, email;
 var authorised;
 const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
@@ -50,8 +51,11 @@ const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}\\views\
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
 
 handlebars.registerHelper('authorised', authorised);
-
-
+handlebars.registerHelper('user_id', user_id);
+handlebars.registerHelper('username', username);
+handlebars.registerHelper('forename', forename);
+handlebars.registerHelper('surname', surname);
+handlebars.registerHelper('email', email);
 
 
 /**
@@ -115,15 +119,14 @@ router.get('/item/:id', async ctx => {
  */
 router.post('/register', koaBody, async ctx => {
     try {
-        // extract the data from the request
         const body = ctx.request.body
         const { path, type } = ctx.request.files.avatar
-            // call the functions in the module
+        console.log(ctx.request.files.avatar)
         const user = await new User(dbName)
-        await user.register(body.user, body.pass, body.forename, body.surname, body.email)
-            // await user.uploadPicture(path, type)
-            // redirect to the home page
-        ctx.redirect(`/?msg=new user "${body.name}" added`)
+        await user.register(body.username, body.pass, body.forename, body.surname, body.email)
+        await fs.copy(path, `public/avatars/${username}avatar.png`)
+        ctx.redirect(`/?msg=new user "${body.username}" added`)
+        authorised = ctx.session.authorised = true;
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
@@ -152,10 +155,16 @@ router.get('/login', async ctx => {
 router.post('/login', async ctx => {
         try {
             const body = ctx.request.body
-            const user = await new User(dbName)
-            await user.login(body.user, body.pass)
+            var userData = await new User(dbName)
+            await userData.login(body.email, body.pass)
             authorised = ctx.session.authorised = true
-            return ctx.redirect('/?msg=you are now logged in...')
+            email = ctx.session.email = body.email
+            userData = await userData.getUserData(email)
+            user_id = parseInt(userData.user_id)
+            username = userData.username
+            forename = userData.forename
+            surname = userData.surname
+            return ctx.redirect('/?msg=you are now logged in...', { authorised, user_id, username, forename, surname, email })
         } catch (err) {
             await ctx.render('error', { message: err.message })
         }
@@ -167,22 +176,55 @@ router.post('/login', async ctx => {
      * @route {GET} /logout
      */
 router.get('/logout', async ctx => {
-    authorised = ctx.session.authorised = null
+    authorised = ctx.session.authorised = null;
+    email = ctx.session.user = null;
     ctx.redirect('/?msg=you are now logged out')
-    console.log(authorised)
 })
 
 
 
 router.get('/createAnOffer', async ctx => {
     try {
-        console.log(authorised)
         if (authorised !== true) throw new Error('You must log in');
         await ctx.render('createAnOffer', authorised);
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
 })
+
+router.post('/createAnOffer', koaBody, async ctx => {
+    try {
+        const body = ctx.request.body
+        console.log(typeof user_id)
+        const { path, type } = ctx.request.files.item_img
+        const listing = await new Listing(dbName)
+        await fs.copy(path, `public/database_images/${body.username}\'s${body.item_name}.png`)
+        await listing.create(user_id, body.item_name, body.item_description, `public/database_images/${body.item_name}.png`)
+        ctx.redirect(`/?msg=new user "${body.name}" added`)
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+router.get('/accountPage', async ctx => {
+    try {
+        email = ctx.session.email
+        if (authorised !== true) throw new Error('You must log in');
+        var userData = await new User(dbName)
+        userData = await userData.getUserData(email)
+        user_id = parseInt(userData.user_id)
+        username = userData.username
+        forename = userData.forename
+        surname = userData.surname
+        console.log(typeof user_id)
+        return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
+
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+
 
 
 

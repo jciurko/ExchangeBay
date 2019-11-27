@@ -1,36 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
- 
-<head>
-    <title>Account Overview</title>
-    <meta charset="utf-8">
-</head>
-<body>
-    <figure>
-        <img src = "profilepic.jpg" alt = "Your photo"> </img>
-    </figure>
-    <h1 class = "B">Account Information</h1>
-    <div class = "card-body">
-        <ul>
-            <li>Personal Information</li>
-            <li>Addresses</li>
-            <li>Feedback</li>
-        </ul>
-    </div>
-    <div class = "card-body">
-        <ul>
-            <li>Payment Options</li>
-            <li>PayPal Account</li>
-            <li>Donation Account</li>
-        </ul>
-    </div>
-    <div class = "card-body">
-        <ul>
-            <li>Site Preferences</li>
-            <li>Advertisement Preferences</li>
-            <li>Communication Preferences</li>
-            <li>Close Account</li>
-        </ul>
-    </div>
-</body>
+    
+    <head>
+        <title>Account Overview</title>
+        <link rel = "icon" href = "avatars/avatar.png" type = "image/png">
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <meta name="ExchangeBAY" content="Account Overview">
+        <meta name="author" content="Jakub Ciurko">
+        <link href="css/style.css" type="text/css" rel="stylesheet" />
+        <script src="index.js"></script>
+    </head>
+    <body>
+        {{>postLoginHeader}}
+
+        <figure>
+            <img id='profile_pic' src = "avatars/avatar.png"  height= '200px' alt = "Your photo"> </img>
+        </figure>
+        <section class='account_page'>
+            <h1 class = "B">Account Information</h1>
+        
+                <ul>
+                    <li>User Id: {{user_id}}</li>
+                    <li>User name: {{username}}</li>
+                    <li>Forename: {{sorename}}</li>
+                    <li>Surname: {{surname}}</li>
+                    <li>Email Address:{{email}} </li>
+                </ul>
+            
+                <ul>
+                    <li>Payment Options</li>
+                    <li>PayPal Account</li>
+                    <li>Donation Account</li>
+                </ul>
+            
+        
+                <ul>
+                    <li>Site Preferences</li>
+                    <li>Advertisement Preferences</li>
+                    <li>Communication Preferences</li>
+                    <li>Close Account</li>
+                </ul>
+        </section>
+    </body>
+    <footer >       {{> footer}}        </footer>
+
 </html>

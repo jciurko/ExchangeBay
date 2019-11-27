@@ -320,9 +320,24 @@ input[type="button"] {
 
 /* Login styles end */
 
-#offer_cells {
-    align-self: right;
+section#offer_form {
+    display: block;
+    width: 60%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 150px;
+    border: #4CAF50 solid;
+    border-radius: 10px;
+}
+
+#profile_pic {
+    position: static;
+    left: 50px;
+    right: 20px;
+}
+
+.account_page {
+    font-size: 16pt;
     position: relative;
-    display: table-column;
-    background: black;
+    display: block;
 }
