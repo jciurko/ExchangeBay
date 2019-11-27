@@ -41,13 +41,13 @@ const saltRounds = 10
 
 var user_id, username, forename, surname, email;
 var authorised;
-const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
+const header = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
-const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'));
+const footer = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/footer.handlebars`).toString('utf-8'));
 handlebars.registerPartial('footer', footer);
-const dPage = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\default_page.handlebars`).toString('utf-8'));
+const dPage = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/default_page.handlebars`).toString('utf-8'));
 handlebars.registerPartial('default_page', dPage);
-const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\loggedInHeader.handlebars`).toString('utf-8'));
+const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/loggedInHeader.handlebars`).toString('utf-8'));
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
 
 handlebars.registerHelper('authorised', authorised);
