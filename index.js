@@ -169,20 +169,25 @@ router.post('/login', async ctx => {
             await ctx.render('error', { message: err.message })
         }
     })
-    /**
-     * The logout page/script.
-     *
-     * @name Logout Page
-     * @route {GET} /logout
-     */
+
+/**
+ * The logout page/script.
+ *
+ * @name Logout Page
+ * @route {GET} /logout
+ */
 router.get('/logout', async ctx => {
     authorised = ctx.session.authorised = null;
     email = ctx.session.user = null;
     ctx.redirect('/?msg=you are now logged out')
 })
 
-
-
+/**
+ * The offer creation page.
+ *
+ * @name Offer creation Page
+ * @route {GET} /createAnOffer
+ */
 router.get('/createAnOffer', async ctx => {
     try {
         if (authorised !== true) throw new Error('You must log in');
@@ -192,15 +197,22 @@ router.get('/createAnOffer', async ctx => {
     }
 })
 
+/**
+ * The offer creation script.
+ *
+ * @name Offer creation Page
+ * @route {POST} /createAnOffer
+ */
 router.post('/createAnOffer', koaBody, async ctx => {
     try {
         const body = ctx.request.body
         console.log(typeof user_id)
         const { path, type } = ctx.request.files.item_img
         const listing = await new Listing(dbName)
-        await fs.copy(path, `public/database_images/${body.username}\'s${body.item_name}.png`)
-        await listing.create(user_id, body.item_name, body.item_description, `public/database_images/${body.item_name}.png`)
-        ctx.redirect(`/?msg=new user "${body.name}" added`)
+        const filename = `database_images/${body.username}s${body.item_name}.png`
+        await fs.copy(path, `public/${filename}`)
+        await listing.create(user_id, body.item_name, body.item_description, filename)
+        ctx.redirect(`/?msg=new listing "${body.name}" added`)
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
@@ -216,7 +228,6 @@ router.get('/accountPage', async ctx => {
         username = userData.username
         forename = userData.forename
         surname = userData.surname
-        console.log(typeof user_id)
         return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
 
     } catch (err) {
