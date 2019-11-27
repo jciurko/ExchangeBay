@@ -39,14 +39,18 @@ const port = process.env.PORT || defaultPort
 const dbName = 'exchangebay.db'
 const saltRounds = 10
 
-const authorised = false;
+var authorised;
 const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
 const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'));
 handlebars.registerPartial('footer', footer);
 const dPage = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\default_page.handlebars`).toString('utf-8'));
 handlebars.registerPartial('default_page', dPage);
+const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\loggedInHeader.handlebars`).toString('utf-8'));
+handlebars.registerPartial('postLoginHeader', postLoginHeader);
+
 handlebars.registerHelper('authorised', authorised);
+
 
 
 
@@ -135,9 +139,10 @@ router.post('/register', koaBody, async ctx => {
  */
 router.get('/login', async ctx => {
     const data = {}
+    authorised = ctx.session.authorised = null
     if (ctx.query.msg) data.msg = ctx.query.msg
     if (ctx.query.user) data.user = ctx.query.user
-    await ctx.render('login', data)
+    await ctx.render('login', { data, authorised })
 })
 
 /**
@@ -147,25 +152,24 @@ router.get('/login', async ctx => {
  * @route {POST} /login
  */
 router.post('/login', async ctx => {
-    try {
-        const body = ctx.request.body
-        const user = await new User(dbName)
-        await user.login(body.user, body.pass)
-        ctx.session.authorised = true
-        return ctx.redirect('/?msg=you are now logged in...')
-    } catch (err) {
-        await ctx.render('error', { message: err.message })
-    }
-})
-
-/**
- * The logout page/script.
- *
- * @name Logout Page
- * @route {GET} /logout
- */
+        try {
+            const body = ctx.request.body
+            const user = await new User(dbName)
+            await user.login(body.user, body.pass)
+            authorised = ctx.session.authorised = true
+            return ctx.redirect('/?msg=you are now logged in...')
+        } catch (err) {
+            await ctx.render('error', { message: err.message })
+        }
+    })
+    /**
+     * The logout page/script.
+     *
+     * @name Logout Page
+     * @route {GET} /logout
+     */
 router.get('/logout', async ctx => {
-    ctx.session.authorised = null
+    authorised = ctx.session.authorised = null
     ctx.redirect('/?msg=you are now logged out')
 })
 

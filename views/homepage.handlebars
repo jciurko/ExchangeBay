@@ -11,8 +11,11 @@
                 <link href="css/style.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
-                <header>        {{> header}}    </header>
                 {{#if authorised}}
+                        {{>postLoginHeader}}adssssssss
+                
+                {{else}}
+                        {{> header}}
                 {{/if}}
                 {{> default_page}}
         </body>
