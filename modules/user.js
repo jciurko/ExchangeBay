@@ -61,17 +61,10 @@ class User {
         }
     }
 
-    /*async uploadPicture(path, mimeType) {
-    	const extension = mime.extension(mimeType)
-    	console.log(`path: ${path}`)
-    	console.log(`extension: ${extension}`)
-    	//await fs.copy(path, `public/avatars/${username}.${fileExtension}`)
-    }*/
-
     /**
      * Login an user.
-     * @param {String} username - The username of the new user.
-     * @param {String} password - The password of the new user.
+     * @param {String} email - The email of the user.
+     * @param {String} password - The password of the user.
      * @returns {Boolean} True on success, throws an error error on failure
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
@@ -89,6 +82,13 @@ class User {
             throw err
         }
     }
+
+    /**
+     * Get all database information for an user.
+     * @param {String} email - The email of the user.
+     * @returns {Array} Array of user data for the given email
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
     async getUserData(email) {
         try {
             let sql = `SELECT * FROM user WHERE email= "${email}";`

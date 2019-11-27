@@ -166,7 +166,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line21">line 21</a>
+        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line20">line 20</a>
     </li></ul></dd>
     
 
@@ -244,7 +244,178 @@
     
 
     
-    <h4 class="name" id="login"><span class="type-signature">(async) </span>login<span class="signature">(username, password)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="getUserData"><span class="type-signature">(async) </span>getUserData<span class="signature">(email)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get all database information for an user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The email of the user.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line92">line 92</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        Will throw an error if operation fails and provide descriptive reasoning
+    
+    </div>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Array of user data for the given email
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="login"><span class="type-signature">(async) </span>login<span class="signature">(email, password)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
 
     
@@ -288,7 +459,7 @@
 
         <tr>
             
-                <td class="name"><code>username</code></td>
+                <td class="name"><code>email</code></td>
             
 
             <td class="type">
@@ -304,7 +475,7 @@
 
             
 
-            <td class="description last">The username of the new user.</td>
+            <td class="description last">The email of the user.</td>
         </tr>
 
     
@@ -327,7 +498,7 @@
 
             
 
-            <td class="description last">The password of the new user.</td>
+            <td class="description last">The password of the user.</td>
         </tr>
 
     
@@ -368,7 +539,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line77">line 77</a>
+        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -438,7 +609,7 @@
     
 
     
-    <h4 class="name" id="register"><span class="type-signature">(async) </span>register<span class="signature">(user, pass, forename, surname, email)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="register"><span class="type-signature">(async) </span>register<span class="signature">(username, password, forename, surname, email)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
 
     
@@ -482,7 +653,7 @@
 
         <tr>
             
-                <td class="name"><code>user</code></td>
+                <td class="name"><code>username</code></td>
             
 
             <td class="type">
@@ -505,7 +676,7 @@
 
         <tr>
             
-                <td class="name"><code>pass</code></td>
+                <td class="name"><code>password</code></td>
             
 
             <td class="type">
@@ -631,7 +802,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line41">line 41</a>
+        <a href="modules_user.js.html">modules/user.js</a>, <a href="modules_user.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -717,7 +888,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Nov 23 2019 02:23:15 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 23:26:52 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
