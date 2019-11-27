@@ -319,3 +319,10 @@ input[type="button"] {
 
 
 /* Login styles end */
+
+#offer_cells {
+    align-self: right;
+    position: relative;
+    display: table-column;
+    background: black;
+}

@@ -171,5 +171,17 @@ router.get('/logout', async ctx => {
     ctx.redirect('/?msg=you are now logged out')
 })
 
+router.get('/createAnOffer', async ctx => {
+    try {
+        console.log(authorised)
+        if (authorised !== true) throw new Error('You must log in');
+        await ctx.render('createAnOffer', authorised);
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+
+
 app.use(router.routes())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
