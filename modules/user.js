@@ -22,7 +22,7 @@ class User {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, password VARCHAR (32) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, email VARCHAR (50) NOT NULL);'
+			const sql = 'CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, password VARCHAR (60) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, email VARCHAR (50) NOT NULL);'
 			await this.db.run(sql)
 			return this
 		})()
@@ -30,30 +30,30 @@ class User {
 
 	/**
      * Register an user. This checks for existing entries for a given username
-     * @param {String} user - The username of the new user.
-     * @param {String} pass - The password of the new user.
+     * @param {String} username - The username of the new user.
+     * @param {String} password - The password of the new user.
      * @param {String} forename - The forename of the new user.
      * @param {String} surname - The surname of the new user.
      * @param {String} email - The email of the new user.
      * @returns {Boolean} True on success, throws an error error on failure
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-	async register(user, pass, forename, surname, email) {
+	async register(username, password, forename, surname, email) {
 		try {
-			if(user.length === 0) throw new Error('missing username')
-			if(pass.length === 0) throw new Error('missing password')
+			if(username.length === 0) throw new Error('missing username')
+			if(password.length === 0) throw new Error('missing password')
 			if(forename.length === 0) throw new Error('missing forename')
 			if(surname.length === 0) throw new Error('missing surname')
 			if(email.length === 0) throw new Error('missing email')
-			let sqlUser = `SELECT COUNT(id) as records FROM user WHERE username="${user}";`
+			let sqlUser = `SELECT COUNT(username) as records FROM user WHERE username="${username}";`
 			const dataUser = await this.db.get(sqlUser)
-			if(dataUser.records !== 0) throw new Error(`username "${user}" already in use`)
-			let sqlEmail = `SELECT COUNT(id) as records FROM user WHERE email="${email}";`
+			if(dataUser.records !== 0) throw new Error(`username "${username}" already in use`)
+			let sqlEmail = `SELECT COUNT(email) as records FROM user WHERE email="${email}";`
 			const dataEmail = await this.db.get(sqlEmail)
 			if(dataEmail.records !== 0) throw new Error(`email "${email}" already in use`)
-			pass = await bcrypt.hash(pass, saltRounds)
-			sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
-			await this.db.run(sql)
+			password = await bcrypt.hash(password, saltRounds)
+			sqlUser = `INSERT INTO user(username, password, forename, surname, email) VALUES("${username}", "${password}", "${forename}", "${surname}", "${email}")`
+			await this.db.run(sqlUser)
 			return true
 		} catch(err) {
 			throw err
@@ -76,7 +76,7 @@ class User {
      */
 	async login(username, password) {
 		try {
-			let sql = `SELECT count(id) AS count FROM user WHERE user=name"${username}";`
+			let sql = `SELECT count(user_id) AS count FROM user WHERE user=name"${username}";`
 			const records = await this.db.get(sql)
 			if(!records.count) throw new Error(`username "${username}" not found`)
 			sql = `SELECT password FROM user WHERE username = "${username}";`
@@ -91,4 +91,4 @@ class User {
 
 }
 
-module.exports = User
+module.exports = User 
