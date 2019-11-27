@@ -8,7 +8,7 @@ describe('register()', () => {
 	test('register a valid account', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		const register = await account.register('doej', 'password')
+		const register = await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		expect(register).toBe(true)
 		done()
 	})
@@ -16,8 +16,8 @@ describe('register()', () => {
 	test('register a duplicate username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.register('doej', 'password') )
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		await expect( account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com') )
 			.rejects.toEqual( Error('username "doej" already in use') )
 		done()
 	})
@@ -49,7 +49,7 @@ describe('login()', () => {
 	test('log in with valid credentials', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		const valid = await account.login('doej', 'password')
 		expect(valid).toBe(true)
 		done()
@@ -58,7 +58,7 @@ describe('login()', () => {
 	test('invalid username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		await expect( account.login('roej', 'password') )
 			.rejects.toEqual( Error('username "roej" not found') )
 		done()
@@ -67,7 +67,7 @@ describe('login()', () => {
 	test('invalid password', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await account.register('doej', 'password')
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		await expect( account.login('doej', 'bad') )
 			.rejects.toEqual( Error('invalid password for account "doej"') )
 		done()
