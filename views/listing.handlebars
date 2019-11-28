@@ -22,12 +22,14 @@
 	<aside class="user-info">
 		<p>Own an item {{listerusername}} wants to swap?</p>
 		<p class="gdpr-notice">Notice: We cannot display personally identifiable information due to GDPR EU regulation!</p>
-		<select name="swap-item">
-			{{#each ownListings}}
-                <option>{{this}}</option>
-            {{/each}}
-		</select>
-		<button>Request to Swap</button>
+		<form method="post">
+			<select name="swap-item">
+				{{#each ownListings}}
+	                <option value="{{this.id}}">{{this.name}}</option>
+	            {{/each}}
+			</select>
+			<button type="submit">Request to Swap</button>
+		</form>
 	</aside>
 </body>
 </html>

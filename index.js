@@ -105,11 +105,19 @@ router.get('/item/:id', async ctx => {
 	const listing = await new Listing(dbName);
 
     let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
+    const listingData = [];
+    for(let i = 0; i < usersListings.length;i++){
+        let data = {
+            id: i,
+            name: usersListings[i]
+        }
+        listingData.push(data);
+    }
 
 	const parameters = ctx.params;
 	try{
 		const data = await listing.getMetadata(parameters.id);
-        data.ownListings = usersListings;
+        data.ownListings = listingData;
 		await ctx.render('listing', data);
 	}catch(err){
 		await ctx.render('homepage', {message: err.message});
