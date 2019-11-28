@@ -57,4 +57,10 @@ fi
 
 ./node_modules/.bin/eslint .
 
+echo "generating documentation..."
+
+./document.sh
+
+git add docs
+
 echo "  commit successful..."
