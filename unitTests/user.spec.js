@@ -66,7 +66,7 @@ describe('getUserDataFromID()', () => {
 	test('get user from non-numeric ID', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await expect( account.getUserDataFromID("dsadas") )
+		await expect( account.getUserDataFromID('dsadas') )
 			.rejects.toEqual( Error('non-numeric id provided') )
 		done()
 	})

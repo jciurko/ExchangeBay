@@ -96,9 +96,9 @@ describe('create()', () => {
 	test('create listing with valid info', async done => {
 		expect.assertions(6)
 		const listing = await new Listing('exchangebay-unittests.db')
-		const listing_id = await listing.create(1, 'item_name', 'item_description', 'img_location')
+		const ListingId = await listing.create(1, 'item_name', 'item_description', 'img_location')
 
-		const data = await listing.getMetadata(listing_id)
+		const data = await listing.getMetadata(ListingId)
 		expect(data).toHaveProperty('id')
 		expect(data).toHaveProperty('itemname')
 		expect(data).toHaveProperty('itemdescription')
@@ -106,7 +106,7 @@ describe('create()', () => {
 		expect(data).toHaveProperty('listerusername')
 		expect(data).toHaveProperty('swaplist')
 		done()
-			
+
 	})
 
 	test('create listing with no user_id', async done => {
@@ -156,39 +156,39 @@ describe('getListings()', () => {
 	test('get listings returns not null', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
-		const all_listings = await listing.getListings()
-		expect(all_listings).not.toBeNull()
+		const allListings = await listing.getListings()
+		expect(allListings).not.toBeNull()
 		done()
 	})
 
 	test('get listings returns array', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
-		const all_listings = await listing.getListings()
-		expect(all_listings).toBeInstanceOf(Array)
+		const allListings = await listing.getListings()
+		expect(allListings).toBeInstanceOf(Array)
 		done()
 	})
 
 	test('get listings returns array with more than 0 elements', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
-		const all_listings = await listing.getListings()
-		expect(all_listings.length).toBeGreaterThanOrEqual(0)
+		const allListings = await listing.getListings()
+		expect(allListings.length).toBeGreaterThanOrEqual(0)
 		done()
 	})
 
 	test('get listings returns valid listings', async done => {
 		const listing = await new Listing('exchangebay-unittests.db')
-		const all_listings = await listing.getListings()
-		expect.assertions(1 + (all_listings.length * 6))
-		expect(all_listings).toBeInstanceOf(Array)
-		for(let i = 0; i < all_listings.length; i++){
-			expect(all_listings[i]).toHaveProperty('id')
-			expect(all_listings[i]).toHaveProperty('itemname')
-			expect(all_listings[i]).toHaveProperty('itemdescription')
-			expect(all_listings[i]).toHaveProperty('imgloc')
-			expect(all_listings[i]).toHaveProperty('listerusername')
-			expect(all_listings[i]).toHaveProperty('swaplist')
+		const allListings = await listing.getListings()
+		expect.assertions(1 + allListings.length * 6)
+		expect(allListings).toBeInstanceOf(Array)
+		for(let i = 0; i < allListings.length; i++) {
+			expect(allListings[i]).toHaveProperty('id')
+			expect(allListings[i]).toHaveProperty('itemname')
+			expect(allListings[i]).toHaveProperty('itemdescription')
+			expect(allListings[i]).toHaveProperty('imgloc')
+			expect(allListings[i]).toHaveProperty('listerusername')
+			expect(allListings[i]).toHaveProperty('swaplist')
 		}
 		done()
 	})
