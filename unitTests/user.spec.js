@@ -67,5 +67,25 @@ describe('login()', () => {
 			.rejects.toEqual( Error('invalid password for account "johndoe@email.com"') )
 		done()
 	})
+})
+
+describe('getUserData()', () => {
+
+	test('gets user email', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		const valid = await account.getUserData('johndoe@email.com')
+		expect(valid.email).toEqual('johndoe@email.com')
+		done()
+	})
+
+	test('check for no email', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		const valid = await account.getUserData('somerandomemail@email.com')
+		expect(valid).toEqual(undefined)
+		done()
+	})
 
 })
