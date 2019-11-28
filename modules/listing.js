@@ -52,6 +52,7 @@ class Listing {
 			let lister = record.user_id
 
 			let item = {
+				lister_id: lister,
 				id: record.item_id,
 				itemname: record.item_name,
 				itemdescription: record.item_description,

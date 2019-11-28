@@ -6,9 +6,10 @@ const Listing = require('../modules/listing.js')
 describe('getMetadata()', () => {
 
 	test('get data from a valid listing', async done => {
-		expect.assertions(6)
+		expect.assertions(7)
 		const listing = await new Listing('exchangebay.db')
 		const data = await listing.getMetadata(1)
+		expect(data).toHaveProperty('lister_id')
 		expect(data).toHaveProperty('id')
 		expect(data).toHaveProperty('itemname')
 		expect(data).toHaveProperty('itemdescription')
