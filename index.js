@@ -39,8 +39,6 @@ const port = process.env.PORT || defaultPort
 const dbName = 'exchangebay.db'
 const saltRounds = 10
 
-var user_id, username, forename, surname, email;
-var authorised;
 const header = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
 const footer = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/footer.handlebars`).toString('utf-8'));
@@ -49,13 +47,6 @@ const dPage = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/de
 handlebars.registerPartial('default_page', dPage);
 const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/loggedInHeader.handlebars`).toString('utf-8'));
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
-
-handlebars.registerHelper('authorised', async ctx => { return ctx.session.authorised });
-handlebars.registerHelper('user_id', user_id);
-handlebars.registerHelper('username', username);
-handlebars.registerHelper('forename', forename);
-handlebars.registerHelper('surname', surname);
-handlebars.registerHelper('email', email);
 
 
 /**
@@ -68,9 +59,9 @@ router.get('/', async ctx => {
     try {
         const listing = await new Listing(dbName);
         let listings = await listing.getListings();
-        await ctx.render('homepage', { listings: listings, authorised });
+        await ctx.render('homepage', { listings: listings, authorised: ctx.session.authorised });
     } catch (err) {
-        await ctx.render('homepage', { listings: [] });
+        await ctx.render('homepage', { listings: [], authorised: ctx.session.authorised });
     }
 })
 
@@ -80,7 +71,7 @@ router.get('/', async ctx => {
  * @name Register Page
  * @route {GET} /register
  */
-router.get('/register', async ctx => await ctx.render('register'))
+router.get('/register', async ctx => await ctx.render('register', { authorised: ctx.session.authorised }))
 
 /**
  * The about page.
@@ -88,7 +79,7 @@ router.get('/register', async ctx => await ctx.render('register'))
  * @name About Page
  * @route {GET} /about
  */
-router.get('/about', async ctx => await ctx.render('about'))
+router.get('/about', async ctx => await ctx.render('about', { authorised: ctx.session.authorised }))
 
 /**
  * The listing detail page.
@@ -102,10 +93,9 @@ router.get('/item/:id', async ctx => {
     const parameters = ctx.params
     try {
         const data = await listing.getMetadata(parameters.id)
-        console.log(data)
         await ctx.render('listing', data);
     } catch (err) {
-        await ctx.render('homepage', { message: err.message })
+        await ctx.render('homepage', { message: err.message, authorised: ctx.session.authorised })
     }
 
 
@@ -127,9 +117,8 @@ router.post('/register', koaBody, async ctx => {
         await user.register(body.username, body.pass, body.forename, body.surname, body.email)
         await fs.copy(path, `public/avatars/${username}avatar.png`)
         ctx.redirect(`/?msg=new user "${body.username}" added`)
-        authorised = ctx.session.authorised = true;
     } catch (err) {
-        await ctx.render('error', { message: err.message })
+        await ctx.render('error', { message: err.message, authorised: ctx.session.authorised })
     }
 })
 
@@ -141,10 +130,9 @@ router.post('/register', koaBody, async ctx => {
  */
 router.get('/login', async ctx => {
     const data = {}
-    authorised = ctx.session.authorised = null
     if (ctx.query.msg) data.msg = ctx.query.msg
     if (ctx.query.user) data.user = ctx.query.user
-    await ctx.render('login', { data, authorised })
+    await ctx.render('login', { data, authorised: ctx.session.authorised })
 })
 
 /**
@@ -159,21 +147,14 @@ router.post('/login', async ctx => {
         var userData = await new User(dbName)
         await userData.login(body.email, body.pass)
         ctx.session.authorised = true
-        email = ctx.session.email = body.email
-        userData = await userData.getUserData(email)
+        ctx.session.email = body.email
+        userData = await userData.getUserData(body.email)
         ctx.session.user_id = parseInt(userData.user_id)
         ctx.session.username = userData.username
         ctx.session.forename = userData.forename
         ctx.session.surname = userData.surname
         console.log(ctx.session)
-        return ctx.redirect('/?msg=you are now logged in...', {
-
-            user_id,
-            username,
-            forename,
-            surname,
-            email
-        })
+        return ctx.redirect('/?msg=you are now logged in...')
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
@@ -187,8 +168,8 @@ router.post('/login', async ctx => {
  * @route {GET} /logout
  */
 router.get('/logout', async ctx => {
-    authorised = ctx.session.authorised = null;
-    email = ctx.session.user = null;
+    ctx.session.authorised = null;
+    ctx.session = null;
     ctx.redirect('/?msg=you are now logged out')
 })
 
@@ -196,11 +177,8 @@ router.get('/logout', async ctx => {
 
 router.get('/createAnOffer', async ctx => {
     try {
-
-
-        console.log(authorised, user_id, username, forename, surname, email)
-        if (authorised !== true) throw new Error('You must log in');
-        await ctx.render('createAnOffer', authorised);
+        if (ctx.session.authorised !== true) throw new Error('You must log in');
+        await ctx.render('createAnOffer', { authorised: ctx.session.authorised });
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
@@ -226,17 +204,8 @@ router.post('/createAnOffer', koaBody, async ctx => {
 
 router.get('/accountPage', async ctx => {
     try {
-        ctx.session.authorised = true
-        email = ctx.session.email
-        if (authorised !== true) throw new Error('You must log in');
-        var userData = await new User(dbName)
-        userData = await userData.getUserData(email)
-        ctx.session.user_id = parseInt(userData.user_id)
-        ctx.session.username = userData.username
-        ctx.session.forename = userData.forename
-        ctx.session.surname = userData.surname
-        console.log(typeof user_id)
-        return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
+        if (ctx.session.authorised !== true) throw new Error('You must log in');
+        return ctx.render('accountPage', { authorised: ctx.session.authorised, user_id: ctx.session.user_id, username: ctx.session.username, forename: ctx.session.forename, surname: ctx.session.surname, email: ctx.session.email });
 
     } catch (err) {
         await ctx.render('error', { message: err.message })
