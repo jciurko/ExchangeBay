@@ -97,12 +97,14 @@ router.get('/about', async ctx => await ctx.render('about'))
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
+    if(ctx.session.authorised !== true){
+        return ctx.redirect('/?msg=Only logged in users can view listings.')
+    }
     // call the functions in the listing module
     const listing = await new Listing(dbName)
     const parameters = ctx.params
     try {
         const data = await listing.getMetadata(parameters.id)
-        data.authorised = ctx.session.authorised
         await ctx.render('listing', data);
     } catch (err) {
         await ctx.render('homepage', { message: err.message })
