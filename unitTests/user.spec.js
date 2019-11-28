@@ -25,7 +25,7 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('', 'password') )
-			.rejects.toEqual( Error('Username can\'t be empty') )
+			.rejects.toEqual( Error('username is empty') )
 		done()
 	})
 
@@ -33,7 +33,7 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('doej', '') )
-			.rejects.toEqual( Error('Password can\'t be empty') )
+			.rejects.toEqual( Error('password is empty') )
 		done()
 	})
 

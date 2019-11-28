@@ -28,11 +28,23 @@ class Listing {
      * Throws an error including input name if variable is empty
      * @param {Object} input - The username of the new user.
      * @param {String} varName - The password of the new user.
-     * @throws Will throw an error if variable is epty and provide contextual name
+     * @throws Will throw an error if variable is empty and provide contextual name
      */
 	async errorIfEmpty(input, varName) {
 		if(input === null || input === '' || input.length === 0) {
 			throw new Error(`${varName} is empty`)
+		}
+	}
+
+	/**
+     * Throws an error including input name if variable is not a number
+     * @param {Object} input - The username of the new user.
+     * @param {String} varName - The password of the new user.
+     * @throws Will throw an error if variable is not a number and provide contextual name
+     */
+	async errorIfNaN(input, varName) {
+		if(isNaN(input)) {
+			throw new Error(`invalid ${varName} provided`)
 		}
 	}
 
@@ -94,9 +106,9 @@ class Listing {
 	async getListingNamesFromUserID(userID) {
 		try {
 			await this.errorIfEmpty(userID.toString(), 'user_id')
-
-			if(isNaN(userID)) {
-				throw new Error('non-numeric user id provided')
+			await this.errorIfNaN(userID, 'user_id')
+			if(parseInt(userID) < 1) {
+				throw new Error('invalid user id provided')
 			}
 
 			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE user_id="${userID}";`
@@ -166,11 +178,8 @@ class Listing {
 	async create(userID, itemName, itemDescription, imgLocation) {
 		try {
 
-			if(isNaN(userID)) {
-				throw new Error('non-numeric user_id provided')
-			}
-
 			await this.errorIfEmpty(userID.toString(), 'user_id')
+			await this.errorIfNaN(userID, "user_id")
 			await this.errorIfEmpty(itemName, 'item_name')
 			await this.errorIfEmpty(itemDescription, 'item_description')
 			await this.errorIfEmpty(imgLocation, 'img_location')
