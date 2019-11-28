@@ -6,23 +6,30 @@ const sqlite = require('sqlite-async')
 class Mailer {
 
     /**
-     * Initialises database and adds 'users' table if it does not already exist
+     * Initialises email information
      * @constructor
-     * @param {String} [dbName] - The name of the database. Defaults to :memory:
-     * @returns {User} New instance of User class
+     * @param {String} [email] - Email username for SMTP
+     * @param {String} [pass] - Password for SMTP
+     * @returns {Mailer} New instance of Mailer class
      */
     constructor(email, pass) {
         this.email = email;
         this.pass = pass;
     }
 
+    /**
+     * Sends email to an address
+     * @param {String} [recipient] - Email for recipient
+     * @param {String} [subject] - Subject for email
+     * @param {String} [message] - Message body for email
+     */
     async sendEmailTo(recipient, subject, message) {
         try {
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
                     user: this.email,
-                    pass: this.page,
+                    pass: this.pass,
                 }
             });
             let mailOptions = {
@@ -31,9 +38,9 @@ class Mailer {
                 subject: subject,
                 text: message,
             };
-            transporter.sendMail(mailOptions, function(err, data) {
+            transporter.sendMail(mailOptions, (err, data) => {
                 if (err) {
-                    throw new Error('Username can\'t be empty')
+                    throw err
                 } else {
                     console.log('Email sent!')
                 }
@@ -44,3 +51,5 @@ class Mailer {
         }
     }
 }
+
+module.exports = Mailer
