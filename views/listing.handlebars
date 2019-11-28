@@ -4,6 +4,11 @@
 	<link href="/css/style.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
+	{{#if authorised}}
+            {{>postLoginHeader}}
+    {{else}}
+            {{> header}}
+    {{/if}}
 	<!-- Item details -->
 	<section class="item-details">
 			
