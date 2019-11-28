@@ -244,7 +244,7 @@
     
 
     
-    <h4 class="name" id="create"><span class="type-signature">(async) </span>create<span class="signature">(user_id, item_name, item_description, img_location)</span><span class="type-signature"> &rarr; {Integer}</span></h4>
+    <h4 class="name" id="create"><span class="type-signature">(async) </span>create<span class="signature">(userID, itemName, itemDescription, imgLocation)</span><span class="type-signature"> &rarr; {Integer}</span></h4>
     
 
     
@@ -288,7 +288,7 @@
 
         <tr>
             
-                <td class="name"><code>user_id</code></td>
+                <td class="name"><code>userID</code></td>
             
 
             <td class="type">
@@ -311,7 +311,7 @@
 
         <tr>
             
-                <td class="name"><code>item_name</code></td>
+                <td class="name"><code>itemName</code></td>
             
 
             <td class="type">
@@ -334,7 +334,7 @@
 
         <tr>
             
-                <td class="name"><code>item_description</code></td>
+                <td class="name"><code>itemDescription</code></td>
             
 
             <td class="type">
@@ -357,7 +357,7 @@
 
         <tr>
             
-                <td class="name"><code>img_location</code></td>
+                <td class="name"><code>imgLocation</code></td>
             
 
             <td class="type">
@@ -414,7 +414,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line160">line 160</a>
+        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -461,6 +461,178 @@
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="errorIfEmpty"><span class="type-signature">(async) </span>errorIfEmpty<span class="signature">(input, varName)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Throws an error including input name if variable is empty
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The username of the new user.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>varName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The password of the new user.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line33">line 33</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        Will throw an error if variable is epty and provide contextual name
+    
+    </div>
+
+
+    
+
+
 
 
 
@@ -573,7 +745,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line82">line 82</a>
+        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -695,7 +867,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line121">line 121</a>
+        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -765,7 +937,7 @@
     
 
     
-    <h4 class="name" id="getMetadata"><span class="type-signature">(async) </span>getMetadata<span class="signature">(listing_id)</span><span class="type-signature"> &rarr; {<a href="global.html#ListingMetadata">ListingMetadata</a>}</span></h4>
+    <h4 class="name" id="getMetadata"><span class="type-signature">(async) </span>getMetadata<span class="signature">(listingId)</span><span class="type-signature"> &rarr; {<a href="global.html#ListingMetadata">ListingMetadata</a>}</span></h4>
     
 
     
@@ -809,7 +981,7 @@
 
         <tr>
             
-                <td class="name"><code>listing_id</code></td>
+                <td class="name"><code>listingId</code></td>
             
 
             <td class="type">
@@ -866,7 +1038,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line45">line 45</a>
+        <a href="modules_listing.js.html">modules/listing.js</a>, <a href="modules_listing.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -952,7 +1124,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 28 2019 17:27:37 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 28 2019 19:19:22 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
