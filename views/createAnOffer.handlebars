@@ -23,7 +23,7 @@
         <form name='offer_form' action="/createAnOffer" enctype="multipart/form-data" onsubmit="return validateForm()" method="post">
             <p>Title:<input type="text" name="item_name" placeholder="" value="{{title}}" ></p>
             <p>Description:<br \><textarea id="offer_cells" rows="6" cols="80"  name="item_description">Describe your item here</textarea></p>
-            <p>Category:<select id="myList">
+            <!--<p>Category:<select id="myList">
                     <option value="1">Home&amp;Kitchen</option>
                     <option value="2">Outdoor</option>
                     <option value="3">Electronics</option>
@@ -34,11 +34,11 @@
                     <option value="1">New</option>
                     <option value="2">Used</option>
                 </select>
-            </p>
+            </p>-->
         <p>Item image:<br /><input id="uploadBox" type="file"  name="item_img" >		
-        <p>"Price":<input id="offer_cells" type="text" name="price" placeholder="Item you want in return" value=""></p>
-        <p>Location:<input id="offer_cells" type="text" name="location" placeholder="<drop-down list>" value=""></p>
-        <iframe width="500" height="300" src="https://api.maptiler.com/maps/basic/?key=rFRsFph9nf6SoAdOWW9d#5.3/52.93886/-1.48657"></iframe>
+        <p>Swap List:<input id="offer_cells" type="text" name="price" placeholder="Item(s) you accept in return" value=""></p>
+        <!--<p>Location:<input id="offer_cells" type="text" name="location" placeholder="<drop-down list>" value=""></p>
+        <iframe width="500" height="300" src="https://api.maptiler.com/maps/basic/?key=rFRsFph9nf6SoAdOWW9d#5.3/52.93886/-1.48657"></iframe>-->
         <p><input type="submit"  class="myButton" value="Create"></p>	
         </form>
     </section>
