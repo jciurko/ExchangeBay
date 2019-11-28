@@ -30,45 +30,50 @@
 
 //Routes File
 
-'use strict'
+'use strict';
 
 /* MODULE IMPORTS */
-const bcrypt = require('bcrypt-promise')
-const Koa = require('koa')
-const Router = require('koa-router')
-const views = require('koa-views')
-const staticDir = require('koa-static')
-const bodyParser = require('koa-bodyparser')
-const koaBody = require('koa-body')({ multipart: true, uploadDir: '.' })
-const session = require('koa-session')
-const sqlite = require('sqlite-async')
-const fs = require('fs-extra')
-const mime = require('mime-types')
-    //const jimp = require('jimp')
-const handlebars = require('handlebars')
 
+// -- UNUSED MODULE -- \\
+const bcrypt = require('bcrypt-promise');
+
+const Koa = require('koa');
+const Router = require('koa-router');
+const views = require('koa-views');
+const staticDir = require('koa-static');
+const bodyParser = require('koa-bodyparser');
+const koaBody = require('koa-body')({multipart: true, uploadDir: '.'});
+const session = require('koa-session');
+
+// -- Declared but never used -- \\
+const sqlite = require('sqlite-async');
+const fs = require('fs-extra');
+const mime = require('mime-types');
+//const jimp = require('jimp')
+const handlebars = require('handlebars');
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
 const Listing = require('./modules/listing')
+const Nodemailer = require('./modules/nodemailer.js')
+const email = 'e005df06c9368fd63@gmail.com';
+const pass = '!Q@W#E$R%T';
 
-const app = new Koa()
-const router = new Router()
+const app = new Koa();
+const router = new Router();
 
 /* CONFIGURING THE MIDDLEWARE */
-app.keys = ['darkSecret']
-app.use(staticDir('public'))
-app.use(bodyParser())
-app.use(session(app))
-app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, { map: { handlebars: 'handlebars' } }))
+app.keys = ['darkSecret'];
+app.use(staticDir('public'));
+app.use(bodyParser());
+app.use(session(app));
+app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}));
 
-const defaultPort = 8080
-const port = process.env.PORT || defaultPort
-const dbName = 'exchangebay.db'
-const saltRounds = 10
+const defaultPort = 8080;
+const port = process.env.PORT || defaultPort;
+const dbName = 'exchangebay.db';
+const saltRounds = 10;
 
-var user_id, username, forename, surname, email;
-var authorised;
 const header = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
 const footer = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/footer.handlebars`).toString('utf-8'));
@@ -77,14 +82,6 @@ const dPage = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/de
 handlebars.registerPartial('default_page', dPage);
 const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/loggedInHeader.handlebars`).toString('utf-8'));
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
-
-handlebars.registerHelper('authorised', authorised);
-handlebars.registerHelper('user_id', user_id);
-handlebars.registerHelper('username', username);
-handlebars.registerHelper('forename', forename);
-handlebars.registerHelper('surname', surname);
-handlebars.registerHelper('email', email);
-
 
 /**
  * The home page.
@@ -96,9 +93,9 @@ router.get('/', async ctx => {
     try {
         const listing = await new Listing(dbName);
         let listings = await listing.getListings();
-        await ctx.render('homepage', { listings: listings, authorised });
+        await ctx.render('homepage', { listings: listings, authorised: ctx.session.authorised });
     } catch (err) {
-        await ctx.render('homepage', { listings: [] });
+        await ctx.render('homepage', { listings: [], authorised: ctx.session.authorised });
     }
 })
 
@@ -108,7 +105,7 @@ router.get('/', async ctx => {
  * @name Register Page
  * @route {GET} /register
  */
-router.get('/register', async ctx => await ctx.render('register'))
+router.get('/register', async ctx => await ctx.render('register', { authorised: ctx.session.authorised }))
 
 /**
  * The about page.
@@ -116,7 +113,7 @@ router.get('/register', async ctx => await ctx.render('register'))
  * @name About Page
  * @route {GET} /about
  */
-router.get('/about', async ctx => await ctx.render('about'))
+router.get('/about', async ctx => await ctx.render('about', { authorised: ctx.session.authorised }))
 
 /**
  * The listing detail page.
@@ -125,18 +122,87 @@ router.get('/about', async ctx => await ctx.render('about'))
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
-    // call the functions in the listing module
-    const listing = await new Listing(dbName)
-    const parameters = ctx.params
-    try {
-        const data = await listing.getMetadata(parameters.id)
-        await ctx.render('listing', data);
-    } catch (err) {
-        await ctx.render('homepage', { message: err.message })
+    try{
+        if (ctx.session.authorised !== true){
+            throw new Error('Only logged in users can view listings.');
+        } 
+        // call the functions in the listing module
+        const listing = await new Listing(dbName)
+
+        let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
+        const listingData = [];
+        for(let i = 0; i &lt; usersListings.length;i++){
+            let data = {
+                id: i,
+                name: usersListings[i]
+            }
+            listingData.push(data);
+        }
+
+    	const parameters = ctx.params;
+	
+		const data = await listing.getMetadata(parameters.id);
+        data.ownListings = listingData;
+        data.authorised = ctx.session.authorised;
+		await ctx.render('listing', data);
+	}catch(err){
+		await ctx.render('error', {message: err.message});
+	}
+    
+    
+});
+
+/**
+ * The trade offer creation script.
+ *
+ * @name Trade Offer Script
+ * @route {POST} /item/{id}
+ */
+router.post('/item/:id', async ctx => {
+    try{
+        if (ctx.session.authorised !== true){
+            throw new Error('Only logged in users can send offers.');
+        }
+        let itemIndex = ctx.request.body.swapitem;
+
+        // call the functions in the listing module
+        const listing = await new Listing(dbName);
+
+        let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
+
+        if(itemIndex >= usersListings.length){
+            throw new Error("Invalid trading item selected")
+        }
+
+        let selectedTradeItem = usersListings[itemIndex];
+
+        let listingInfo = await listing.getMetadata(ctx.params.id);
+
+        const user = await new User(dbName);
+
+        let listerInfo = await user.getUserDataFromID(listingInfo.lister_id);
+
+    
+        const msg = `Hello ${listerInfo.username},
+The user ${ctx.session.username} has offered a trade for one of your item listings!
+
+They wish to trade their '${selectedTradeItem}' for your '${listingInfo.itemname}'.
+
+You can reach them at ${ctx.session.email} in order to discuss this trade further.
+
+Have a great day,
+ExchangeBay.`
+        const mailer = await new Nodemailer(email, pass);
+        console.log(listerInfo);
+        await mailer.sendEmailTo(listerInfo.email, `New trade offer for your item '${listingInfo.itemname}'`, msg);
+        
+        await ctx.render('homepage', {authorised: ctx.session.authorised, message: "Your trade offer has been sent successfully!"});
+    }catch(err){
+        await ctx.render('error', {message: err.message});
     }
-
-
-})
+    
+    
+});
 
 
 /**
@@ -152,11 +218,10 @@ router.post('/register', koaBody, async ctx => {
         console.log(ctx.request.files.avatar)
         const user = await new User(dbName)
         await user.register(body.username, body.pass, body.forename, body.surname, body.email)
-        await fs.copy(path, `public/avatars/${username}avatar.png`)
+        await fs.copy(path, `public/avatars/${ctx.session.username}avatar.png`)
         ctx.redirect(`/?msg=new user "${body.username}" added`)
-        authorised = ctx.session.authorised = true;
     } catch (err) {
-        await ctx.render('error', { message: err.message })
+        await ctx.render('error', { message: err.message, authorised: ctx.session.authorised })
     }
 })
 
@@ -168,10 +233,9 @@ router.post('/register', koaBody, async ctx => {
  */
 router.get('/login', async ctx => {
     const data = {}
-    authorised = ctx.session.authorised = null
     if (ctx.query.msg) data.msg = ctx.query.msg
     if (ctx.query.user) data.user = ctx.query.user
-    await ctx.render('login', { data, authorised })
+    await ctx.render('login', { data, authorised: ctx.session.authorised })
 })
 
 /**
@@ -181,22 +245,24 @@ router.get('/login', async ctx => {
  * @route {POST} /login
  */
 router.post('/login', async ctx => {
-        try {
-            const body = ctx.request.body
-            var userData = await new User(dbName)
-            await userData.login(body.email, body.pass)
-            authorised = ctx.session.authorised = true
-            email = ctx.session.email = body.email
-            userData = await userData.getUserData(email)
-            user_id = parseInt(userData.user_id)
-            username = userData.username
-            forename = userData.forename
-            surname = userData.surname
-            return ctx.redirect('/?msg=you are now logged in...', { authorised, user_id, username, forename, surname, email })
-        } catch (err) {
-            await ctx.render('error', { message: err.message })
-        }
-    })
+    try {
+        const body = ctx.request.body
+        var userData = await new User(dbName)
+        await userData.login(body.email, body.pass)
+        ctx.session.authorised = true
+        ctx.session.email = body.email
+        userData = await userData.getUserData(body.email)
+        ctx.session.user_id = parseInt(userData.user_id)
+        ctx.session.username = userData.username
+        ctx.session.forename = userData.forename
+        ctx.session.surname = userData.surname
+        console.log(ctx.session)
+        return ctx.redirect('/?msg=you are now logged in...')
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
 
 /**
  * The logout page/script.
@@ -205,76 +271,81 @@ router.post('/login', async ctx => {
  * @route {GET} /logout
  */
 router.get('/logout', async ctx => {
-    authorised = ctx.session.authorised = null;
-    email = ctx.session.user = null;
+    ctx.session.authorised = null;
+    ctx.session = null;
     ctx.redirect('/?msg=you are now logged out')
 })
 
-/**
- * The offer creation page.
- *
- * @name Offer creation Page
- * @route {GET} /createAnOffer
- */
+
+
 router.get('/createAnOffer', async ctx => {
     try {
-        if (authorised !== true) throw new Error('You must log in');
-        await ctx.render('createAnOffer', authorised);
+        if (ctx.session.authorised !== true) throw new Error('You must log in');
+        await ctx.render('createAnOffer', { authorised: ctx.session.authorised });
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
 })
 
-/**
- * The offer creation script.
- *
- * @name Offer creation Page
- * @route {POST} /createAnOffer
- */
 router.post('/createAnOffer', koaBody, async ctx => {
     try {
         const body = ctx.request.body
-        console.log(typeof user_id)
+        let item_name = body.item_name
+
+        console.log(body)
+        console.log(Object.keys(body))
         const { path, type } = ctx.request.files.item_img
         const listing = await new Listing(dbName)
-        const filename = `database_images/${body.username}s${body.item_name}.png`
+        const filename = `database_images/${ctx.session.username}s${item_name}.png`
+        await listing.create(ctx.session.user_id, item_name, body.item_description, filename)
         await fs.copy(path, `public/${filename}`)
-        await listing.create(user_id, body.item_name, body.item_description, filename)
-        ctx.redirect(`/?msg=new listing "${body.name}" added`)
+
+        ctx.redirect(`/?msg=new offer "${body.item_name}" added`)
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
 })
 
-/**
- * The account page.
- *
- * @name Account Page
- * @route {GET} /accountPage
- */
 router.get('/accountPage', async ctx => {
     try {
-        email = ctx.session.email
-        if (authorised !== true) throw new Error('You must log in');
-        var userData = await new User(dbName)
-        userData = await userData.getUserData(email)
-        user_id = parseInt(userData.user_id)
-        username = userData.username
-        forename = userData.forename
-        surname = userData.surname
-        return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
+        if (ctx.session.authorised !== true) throw new Error('You must log in');
+        return ctx.render('accountPage', { authorised: ctx.session.authorised, user_id: ctx.session.user_id, username: ctx.session.username, forename: ctx.session.forename, surname: ctx.session.surname, email: ctx.session.email });
 
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
 })
 
+/* TO BE FINISHED
 
+router.get('/restore_pass', async ctx => {
+    try {
+        await ctx.render('restore_pass')
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
 
+router.post('/restore_pass', koaBody, async ctx => {
+    try {
+        const body = ctx.request.body
+        let email = body.email
+        let subject = 'restore password'
+        let message = 'click here to restore password:'
+        const mailer = await new Nodeailer(email, pass)
+        mailer.sendEmailTo(email, subject, message)
 
+        ctx.redirect(`/?msg=email has been sent"${body.item_name}" added`)
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+*/
 
 app.use(router.routes())
-module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))</code></pre>
+module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
+</code></pre>
         </article>
     </section>
 
@@ -284,13 +355,13 @@ module.exports = app.listen(port, async() => console.log(`listening on port ${po
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Account Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Offer creation Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="Mailer.html">Mailer</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li><li><a href="global.html">Trade Offer Script</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 23:55:25 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 28 2019 17:27:37 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

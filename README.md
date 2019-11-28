@@ -1,12 +1,3 @@
-## If `npm install` doesn't work and gives an error when setting up the template, here is one possible fix:
-
->Delete `node_modules` folder and `package-lock.json` <br/>
->Add `package-lock.json` as an exception in `.gitignore` <br/>
->Run `npm i` again
-
-If it still doesn't work and it gives an error with Python and/or Microsoft Visual version, try installing `Microsoft Visual C++ 2017 Redistributable` 
-
-Any other bugs or problems please report to your tutor
 
 # Assignment Template
 
@@ -25,14 +16,42 @@ Mirror Push to this new repository, replacing xxx with the url from the clipboar
 Once you are sure the code is in your new repository, delete the temporary local repository.
 
 `cd .. && rm -rf temp/`
-
 Your private repository on GitHub will now contain a complete copy of this template including the commits that were already made. You can now start your assignment by carrying out the following steps:
 
 Clone your private repository
 
-Change your [local config settings](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). This is a vital step otherwise your commits won't show on the GitHub _graph_ and your grade will be affected.
+## Local Config Settings
+
+Before you make any commits you need to update the [local config settings](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). Start by using the Terminal (or Git Bash on Windows) navigate inside the project. Once you are in this directory run the following commands, substituting you name as it appears on your ID badge and your university email address (without the `uni.` domain prefix).
+
+```bash
+git config user.name 'John Doe'
+git config user.email 'doej@coventry.ac.uk'
+git config core.hooksPath .githooks
+git config --add merge.ff false
+```
+
+Start working on the assignment. Remember to install all the dependencies listed in the `package.json` file.
+
+## Feature Branching
+
+You should not be committing directly to the **master** branch, instead each task or activity you complete should be in its own _feature branch_. You should following the following steps:
 
 Start working on the assignment.
 
 Ben
 Ben K
+
+1. Log onto GitHub and add an issue to the _issue tracker_, this is your _todo_ list.
+2. Create a local feature branch making sure that the name of the branch includes both the issue _number_ and _title_ (in lower case).
+    1. For example: `git checkout -b iss023/fix-login-bug`.
+    2. You can see a list of all the local branches using `git branch`.
+3. As you work on the issue make your local commits by:
+    1. staging the files with `git add --all`.
+    2. committing with the `no-ff` flag, eg. `git commit --no-ff -m 'detailed commit message here'`.
+4. When the task is complete and all the tests pass, push the feature branch to GitHub.
+    1. For example `git push origin iss023/fix-login-bug` would push the branch named above.
+    2. Switch back to the _master_ branch with `git checkout master`.
+5. Back on GitHub raise a **Pull Request** that merges this feature branch to the _master_ branch.
+5. If there are no issues you can then merge the branch using the button in the _Pull Request_ interface.
+6. Pull the latest version of the master branch code using `git pull origin master`.

@@ -27,6 +27,7 @@ class Listing {
 	/** Object definition inspired by answer from Dan Dascalescu at https://stackoverflow.com/a/28763616
 	 * Metadata object used to render information in listing.handlebars
 	 * @typedef {Object} ListingMetadata
+	 * @property {Integer} lister_id The lister's User ID
 	 * @property {Integer} id The listing ID
 	 * @property {String} itemname The item name
 	 * @property {String} itemdescription The item description
@@ -52,6 +53,7 @@ class Listing {
 			let lister = record.user_id
 
 			let item = {
+				lister_id: lister,
 				id: record.item_id,
 				itemname: record.item_name,
 				itemdescription: record.item_description,
@@ -91,7 +93,9 @@ class Listing {
 
 			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item WHERE user_id="${user_id}";`
 			const listing_data = await this.db.get(listing_exists_sql)
-			if(listing_data.records == 0) throw new Error(`no listings found for user id ${user_id}`)
+			if(listing_data.records == 0) {
+				return []
+			} 
 
 			let sql = `SELECT item_name FROM item WHERE user_id="${user_id}";`
 			let results = []

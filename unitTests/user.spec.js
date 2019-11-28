@@ -40,6 +40,39 @@ describe('register()', () => {
 
 })
 
+describe('getUserDataFromID()', () => {
+	test('get with valid user id', async done => {
+		expect.assertions(6)
+		const account = await new Accounts()
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		const data = await account.getUserDataFromID(1)
+		expect(data).toHaveProperty('username')
+		expect(data).toHaveProperty('user_id')
+		expect(data).toHaveProperty('password')
+		expect(data).toHaveProperty('forename')
+		expect(data).toHaveProperty('surname')
+		expect(data).toHaveProperty('email')
+		done()
+	})
+
+	test('get with invalid user id', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.getUserDataFromID(1) )
+			.rejects.toEqual( Error('user with id "1" not found') )
+		done()
+	})
+
+	test('get user from non-numeric ID', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.getUserDataFromID("dsadas") )
+			.rejects.toEqual( Error('non-numeric id provided') )
+		done()
+	})
+
+})
+
 describe('login()', () => {
 	test('log in with valid credentials', async done => {
 		expect.assertions(1)

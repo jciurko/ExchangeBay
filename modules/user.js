@@ -1,8 +1,8 @@
 'use strict'
 
 const bcrypt = require('bcrypt-promise')
-const fs = require('fs-extra')
-const mime = require('mime-types')
+// const fs = require('fs-extra')
+// const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
@@ -83,6 +83,7 @@ class User {
         }
     }
 
+
     /**
      * Get all database information for an user.
      * @param {String} email - The email of the user.
@@ -97,6 +98,32 @@ class User {
         } catch (err) {
             throw err
         }
+    }
+
+    /**
+     * Get all database information for an user from an user_id.
+     * @param {Integer} user_id - The user_id of the user.
+     * @returns {Array} Array of user data for the given email
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
+    async getUserDataFromID(user_id) {
+        try {
+            if(isNaN(user_id)){
+                throw new Error('non-numeric id provided');
+            }
+            let existsCheck = `SELECT count(user_id) AS count FROM user WHERE user_id="${user_id}";`
+            const existsRecords = await this.db.get(existsCheck)
+            if (!existsRecords.count) throw new Error(`user with id "${user_id}" not found`)
+            let sql = `SELECT * FROM user WHERE user_id="${user_id}";`
+            const record = await this.db.get(sql)
+            return record
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async tearDown() {
+        await this.db.close()
     }
 }
 module.exports = User
