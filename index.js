@@ -94,28 +94,84 @@ router.get('/about', async ctx => await ctx.render('about', { authorised: ctx.se
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
-    if (ctx.session.authorised !== true) throw new Error('Only logged in users can view listings.');
-    // call the functions in the listing module
-    const listing = await new Listing(dbName)
+    try{
+        if (ctx.session.authorised !== true){
+            throw new Error('Only logged in users can view listings.');
+        } 
+        // call the functions in the listing module
+        const listing = await new Listing(dbName)
 
-    let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
-    const listingData = [];
-    for(let i = 0; i < usersListings.length;i++){
-        let data = {
-            id: i,
-            name: usersListings[i]
+        let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
+        const listingData = [];
+        for(let i = 0; i < usersListings.length;i++){
+            let data = {
+                id: i,
+                name: usersListings[i]
+            }
+            listingData.push(data);
         }
-        listingData.push(data);
-    }
 
-	const parameters = ctx.params;
-	try{
+    	const parameters = ctx.params;
+	
 		const data = await listing.getMetadata(parameters.id);
         data.ownListings = listingData;
+        data.authorised = ctx.session.authorised;
 		await ctx.render('listing', data);
 	}catch(err){
-		await ctx.render('homepage', {message: err.message});
+		await ctx.render('error', {message: err.message});
 	}
+    
+    
+});
+
+/**
+ * The trade offer creation script.
+ *
+ * @name Trade Offer Script
+ * @route {POST} /item/{id}
+ */
+router.post('/item/:id', async ctx => {
+    try{
+        if (ctx.session.authorised !== true){
+            throw new Error('Only logged in users can send offers.');
+        }
+        let itemIndex = ctx.request.body.swapitem;
+
+        // call the functions in the listing module
+        const listing = await new Listing(dbName);
+
+        let usersListings = await listing.getListingNamesFromUserID(ctx.session.user_id);
+
+        if(itemIndex >= usersListings.length){
+            throw new Error("Invalid trading item selected")
+        }
+
+        let selectedTradeItem = usersListings[itemIndex];
+
+        let listingInfo = await listing.getMetadata(ctx.params.id);
+
+        const user = await new User(dbName);
+
+        let listerInfo = await user.getUserDataFromID(listingInfo.lister_id);
+
+    
+        const msg = `Hello ${listerInfo.username},
+The user ${ctx.session.username} has offered a trade for one of your item listings!
+
+They wish to trade their '${selectedTradeItem}' for your '${listingInfo.itemname}'.
+
+You can reach them at ${ctx.session.email} in order to discuss this trade further.
+
+Have a great day,
+ExchangeBay.`
+        const mailer = await new Nodemailer(email, pass);
+        console.log(listerInfo);
+        await mailer.sendEmailTo(listerInfo.email, `New trade offer for your item '${listingInfo.itemname}'`, msg);
+        
+        await ctx.render('homepage', {authorised: ctx.session.authorised, message: "Your trade offer has been sent successfully!"});
+    }catch(err){
+        await ctx.render('error', {message: err.message});
+    }
     
     
 });
@@ -134,7 +190,7 @@ router.post('/register', koaBody, async ctx => {
         console.log(ctx.request.files.avatar)
         const user = await new User(dbName)
         await user.register(body.username, body.pass, body.forename, body.surname, body.email)
-        await fs.copy(path, `public/avatars/${username}avatar.png`)
+        await fs.copy(path, `public/avatars/${ctx.session.username}avatar.png`)
         ctx.redirect(`/?msg=new user "${body.username}" added`)
     } catch (err) {
         await ctx.render('error', { message: err.message, authorised: ctx.session.authorised })
