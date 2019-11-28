@@ -23,6 +23,10 @@ const handlebars = require('handlebars')
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
 const Listing = require('./modules/listing')
+const Nodemailer = require('./modules/nodemailer.js')
+const email = 'e005df06c9368fd63@gmail.com';
+const pass = '!Q@W#E$R%T';
+
 
 const app = new Koa()
 const router = new Router()
@@ -214,8 +218,32 @@ router.get('/accountPage', async ctx => {
     }
 })
 
+/* TO BE FINISHED
 
+router.get('/restore_pass', async ctx => {
+    try {
+        await ctx.render('restore_pass')
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
 
+router.post('/restore_pass', koaBody, async ctx => {
+    try {
+        const body = ctx.request.body
+        let email = body.email
+        let subject = 'restore password'
+        let message = 'click here to restore password:'
+        const mailer = await new Nodeailer(email, pass)
+        mailer.sendEmailTo(email, subject, message)
+
+        ctx.redirect(`/?msg=email has been sent"${body.item_name}" added`)
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+*/
 
 
 app.use(router.routes())
