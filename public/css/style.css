@@ -320,6 +320,11 @@ input[type="button"] {
 
 /* Login styles end */
 
+/* Error page start */
+.error {
+    text-align: center;
+}
+
 section#offer_form {
     display: block;
     width: 60%;
