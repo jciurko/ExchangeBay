@@ -51,7 +51,7 @@ describe('getListingNamesFromUserID()', () => {
 		const listing = await new Listing('exchangebay.db')
 		const data = await listing.getListingNamesFromUserID(1)
 		expect(data).toBeInstanceOf(Array)
-		expect(all_listings.length).toBeGreaterThanOrEqual(0)
+		expect(data.length).toBeGreaterThanOrEqual(0)
 		done()
 	})
 
