@@ -17,20 +17,20 @@ class User {
      * @param {String} [dbName] - The name of the database. Defaults to :memory:
      * @returns {User} New instance of User class
      */
-    constructor(dbName = ':memory:') {
-        return (async() => {
-            this.db = await sqlite.open(dbName)
-                // we need this table to store the user accounts
-            const sql = 'CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, password VARCHAR (32) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, email VARCHAR (50) NOT NULL);'
-            await this.db.run(sql)
-            return this
-        })()
-    }
+	constructor(dbName = ':memory:') {
+		return (async() => {
+			this.db = await sqlite.open(dbName)
+			// we need this table to store the user accounts
+			const sql = 'CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, password VARCHAR (60) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, email VARCHAR (50) NOT NULL);'
+			await this.db.run(sql)
+			return this
+		})()
+	}
 
     /**
      * Register an user. This checks for existing entries for a given username
-     * @param {String} user - The username of the new user.
-     * @param {String} pass - The password of the new user.
+     * @param {String} username - The username of the new user.
+     * @param {String} password - The password of the new user.
      * @param {String} forename - The forename of the new user.
      * @param {String} surname - The surname of the new user.
      * @param {String} email - The email of the new user.
@@ -55,24 +55,16 @@ class User {
             pass = await bcrypt.hash(pass, saltRounds)
             let sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
             await this.db.run(sql)
-            await this.db.close()
-
+            return true
         } catch (err) {
             throw err
         }
     }
 
-    /*async uploadPicture(path, mimeType) {
-    	const extension = mime.extension(mimeType)
-    	console.log(`path: ${path}`)
-    	console.log(`extension: ${extension}`)
-    	//await fs.copy(path, `public/avatars/${username}.${fileExtension}`)
-    }*/
-
     /**
      * Login an user.
-     * @param {String} username - The username of the new user.
-     * @param {String} password - The password of the new user.
+     * @param {String} email - The email of the user.
+     * @param {String} password - The password of the user.
      * @returns {Boolean} True on success, throws an error error on failure
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
@@ -90,6 +82,13 @@ class User {
             throw err
         }
     }
+
+    /**
+     * Get all database information for an user.
+     * @param {String} email - The email of the user.
+     * @returns {Array} Array of user data for the given email
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
     async getUserData(email) {
         try {
             let sql = `SELECT * FROM user WHERE email= "${email}";`

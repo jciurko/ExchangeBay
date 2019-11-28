@@ -41,16 +41,16 @@ const saltRounds = 10
 
 var user_id, username, forename, surname, email;
 var authorised;
-const header = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\header.handlebars`).toString('utf-8'));
+const header = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/header.handlebars`).toString('utf-8'));
 handlebars.registerPartial('header', header);
-const footer = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\footer.handlebars`).toString('utf-8'));
+const footer = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/footer.handlebars`).toString('utf-8'));
 handlebars.registerPartial('footer', footer);
-const dPage = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\default_page.handlebars`).toString('utf-8'));
+const dPage = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/default_page.handlebars`).toString('utf-8'));
 handlebars.registerPartial('default_page', dPage);
-const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}\\views\\partials\\loggedInHeader.handlebars`).toString('utf-8'));
+const postLoginHeader = handlebars.compile(fs.readFileSync(`${__dirname}/views/partials/loggedInHeader.handlebars`).toString('utf-8'));
 handlebars.registerPartial('postLoginHeader', postLoginHeader);
 
-handlebars.registerHelper('authorised', authorised);
+handlebars.registerHelper('authorised', async ctx => { return ctx.session.authorised });
 handlebars.registerHelper('user_id', user_id);
 handlebars.registerHelper('username', username);
 handlebars.registerHelper('forename', forename);
@@ -102,6 +102,7 @@ router.get('/item/:id', async ctx => {
     const parameters = ctx.params
     try {
         const data = await listing.getMetadata(parameters.id)
+        console.log(data)
         await ctx.render('listing', data);
     } catch (err) {
         await ctx.render('homepage', { message: err.message })
@@ -153,28 +154,38 @@ router.get('/login', async ctx => {
  * @route {POST} /login
  */
 router.post('/login', async ctx => {
-        try {
-            const body = ctx.request.body
-            var userData = await new User(dbName)
-            await userData.login(body.email, body.pass)
-            authorised = ctx.session.authorised = true
-            email = ctx.session.email = body.email
-            userData = await userData.getUserData(email)
-            user_id = parseInt(userData.user_id)
-            username = userData.username
-            forename = userData.forename
-            surname = userData.surname
-            return ctx.redirect('/?msg=you are now logged in...', { authorised, user_id, username, forename, surname, email })
-        } catch (err) {
-            await ctx.render('error', { message: err.message })
-        }
-    })
-    /**
-     * The logout page/script.
-     *
-     * @name Logout Page
-     * @route {GET} /logout
-     */
+    try {
+        const body = ctx.request.body
+        var userData = await new User(dbName)
+        await userData.login(body.email, body.pass)
+        ctx.session.authorised = true
+        email = ctx.session.email = body.email
+        userData = await userData.getUserData(email)
+        ctx.session.user_id = parseInt(userData.user_id)
+        ctx.session.username = userData.username
+        ctx.session.forename = userData.forename
+        ctx.session.surname = userData.surname
+        console.log(ctx.session)
+        return ctx.redirect('/?msg=you are now logged in...', {
+
+            user_id,
+            username,
+            forename,
+            surname,
+            email
+        })
+    } catch (err) {
+        await ctx.render('error', { message: err.message })
+    }
+})
+
+
+/**
+ * The logout page/script.
+ *
+ * @name Logout Page
+ * @route {GET} /logout
+ */
 router.get('/logout', async ctx => {
     authorised = ctx.session.authorised = null;
     email = ctx.session.user = null;
@@ -185,6 +196,9 @@ router.get('/logout', async ctx => {
 
 router.get('/createAnOffer', async ctx => {
     try {
+
+
+        console.log(authorised, user_id, username, forename, surname, email)
         if (authorised !== true) throw new Error('You must log in');
         await ctx.render('createAnOffer', authorised);
     } catch (err) {
@@ -195,12 +209,16 @@ router.get('/createAnOffer', async ctx => {
 router.post('/createAnOffer', koaBody, async ctx => {
     try {
         const body = ctx.request.body
-        console.log(typeof user_id)
+        let item_name = body.item_name
+
+        console.log(body)
+        console.log(Object.keys(body))
         const { path, type } = ctx.request.files.item_img
         const listing = await new Listing(dbName)
-        await fs.copy(path, `public/database_images/${body.username}\'s${body.item_name}.png`)
-        await listing.create(user_id, body.item_name, body.item_description, `public/database_images/${body.item_name}.png`)
-        ctx.redirect(`/?msg=new user "${body.name}" added`)
+        await listing.create(user_id, item_name, body.item_description, `database_images/${username}stutaj${item_name}.jpg`)
+        await fs.copy(path, `public/database_images/${username}\'s${item_name}.png`)
+
+        ctx.redirect(`/?msg=new offer "${body.item_name}" added`)
     } catch (err) {
         await ctx.render('error', { message: err.message })
     }
@@ -208,14 +226,15 @@ router.post('/createAnOffer', koaBody, async ctx => {
 
 router.get('/accountPage', async ctx => {
     try {
+        ctx.session.authorised = true
         email = ctx.session.email
         if (authorised !== true) throw new Error('You must log in');
         var userData = await new User(dbName)
         userData = await userData.getUserData(email)
-        user_id = parseInt(userData.user_id)
-        username = userData.username
-        forename = userData.forename
-        surname = userData.surname
+        ctx.session.user_id = parseInt(userData.user_id)
+        ctx.session.username = userData.username
+        ctx.session.forename = userData.forename
+        ctx.session.surname = userData.surname
         console.log(typeof user_id)
         return ctx.render('accountPage', { authorised, user_id, username, forename, surname, email });
 
