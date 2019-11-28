@@ -118,7 +118,7 @@ router.get('/item/:id', async ctx => {
 		data.authorised = ctx.session.authorised
 		await ctx.render('listing', data)
 	}catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('error', {authorised: ctx.session.authorised, message: err.message})
 	}
 
 
@@ -170,7 +170,7 @@ ExchangeBay.`
 
 		await ctx.render('homepage', {authorised: ctx.session.authorised, message: 'Your trade offer has been sent successfully!'})
 	}catch(err) {
-		await ctx.render('error', {message: err.message})
+		await ctx.render('error', {authorised: ctx.session.authorised, message: err.message})
 	}
 
 
@@ -231,7 +231,7 @@ router.post('/login', async ctx => {
 		console.log(ctx.session)
 		return ctx.redirect('/?msg=you are now logged in...')
 	} catch (err) {
-		await ctx.render('error', { message: err.message })
+		await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
 	}
 })
 
@@ -254,7 +254,7 @@ router.get('/createAnOffer', async ctx => {
 		if (ctx.session.authorised !== true) throw new Error('You must log in')
 		await ctx.render('createAnOffer', { authorised: ctx.session.authorised })
 	} catch (err) {
-		await ctx.render('error', { message: err.message })
+		await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
 	}
 })
 
@@ -273,7 +273,7 @@ router.post('/createAnOffer', koaBody, async ctx => {
 
 		ctx.redirect(`/?msg=new offer "${itemName}" added`)
 	} catch (err) {
-		await ctx.render('error', { message: err.message })
+		await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
 	}
 })
 
@@ -283,7 +283,7 @@ router.get('/accountPage', async ctx => {
 		return ctx.render('accountPage', { authorised: ctx.session.authorised, user_id: ctx.session.user_id, username: ctx.session.username, forename: ctx.session.forename, surname: ctx.session.surname, email: ctx.session.email })
 
 	} catch (err) {
-		await ctx.render('error', { message: err.message })
+		await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
 	}
 })
 
