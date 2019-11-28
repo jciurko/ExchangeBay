@@ -1,0 +1,56 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <title>Offer an exchange</title>
+    <link rel="icon" href="avatars/upload.png" type="image/png">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+
+
+    <meta name="description" content="Listing creation page">
+    <meta name="author" content="Jakub Ciurko">
+    <link href="css/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+        {{>postLoginHeader}}
+    <section class="offer" id="offer_form">
+        <h1>List an item</h1>
+        <form name='offer_form' action="/createAnOffer" enctype="multipart/form-data" onsubmit="return validateForm()" method="post">
+            <p>Title:<input type="text" name="item_name" placeholder="" value="{{title}}" ></p>
+            <p>Description:<br \><textarea id="offer_cells" rows="6" cols="80"  name="item_description">Describe your item here</textarea></p>
+            <!--<p>Category:<select id="myList">
+                    <option value="1">Home&amp;Kitchen</option>
+                    <option value="2">Outdoor</option>
+                    <option value="3">Electronics</option>
+                    <option value="4">Souls</option>
+                </select>
+            </p>
+            <p>Condition: <select id="condition">
+                    <option value="1">New</option>
+                    <option value="2">Used</option>
+                </select>
+            </p>-->
+        <p>Item image:<br /><input id="uploadBox" type="file"  name="item_img" >		
+        <p>Swap List:<input id="offer_cells" type="text" name="price" placeholder="Item(s) you accept in return" value=""></p>
+        <!--<p>Location:<input id="offer_cells" type="text" name="location" placeholder="<drop-down list>" value=""></p>
+        <iframe width="500" height="300" src="https://api.maptiler.com/maps/basic/?key=rFRsFph9nf6SoAdOWW9d#5.3/52.93886/-1.48657"></iframe>-->
+        <p><input type="submit"  class="myButton" value="Create"></p>	
+        </form>
+    </section>
+
+
+
+
+
+</body>
+<footer>Created by UncommunicativeTeam&trade; LTD &reg
+    <button><a href="https://www.google.com">Contact us</a></button>
+
+</footer>
+
+</html>

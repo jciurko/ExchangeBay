@@ -1,0 +1,20 @@
+<h2>Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2> 
+<p>Exchange bay is an item for item exchange. 
+It works simply by bidding on a sellers item with an item of your own instead of money. 
+If the seller accepts the trade then congratulations on a sucessful trade
+</p>
+<section>
+        <p>Items you may be interested in</p>
+        <ul class="carousel">
+
+                {{#each listings}}
+                <li class="slide">
+                        <a href="/item/{{this.id}}">
+                        <img class="slider-thumbnail" src="/{{this.imgloc}}">
+                        <h4>{{this.itemname}}</h4>
+                        <p>{{this.itemdescription}}</p>
+                        </a>
+                </li>
+                {{/each}}
+        </ul>
+</section>

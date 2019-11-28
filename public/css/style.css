@@ -20,7 +20,7 @@ h2.homepage {
     font-size: 15pt;
     font-style: oblique 35deg;
     text-decoration-color: #252525;
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 200;
     width: 100%;
@@ -39,8 +39,9 @@ footer {
 }
 
 nav.homepage {
-    position: fixed;
-    top: 20px;
+    position: absolute;
+    top: 0px;
+    right: 100px;
     right: 20px;
     font-size: 20pt;
     -ms-grid-column-align: center;
@@ -49,6 +50,9 @@ nav.homepage {
 nav.homepage tc {
     /* border: 1px solid black; */
     /* padding: 0em; */
+    position: relative;
+    left: 0px;
+    top: 10px;
     padding-right: 5px;
     padding-left: 5px;
     margin: 1em;
@@ -104,14 +108,15 @@ section.homepage {
     background-color: #252525;
 }
 
-img.slider-thumbnail{
+img.slider-thumbnail {
     height: 128px;
     width: 128px;
     border: 1px solid black;
     border-radius: 5%;
 }
 
-.slide p, .slide h4 {
+.slide p,
+.slide h4 {
     color: black;
 }
 
@@ -192,7 +197,9 @@ ul.carousel li {
     display: inline;
 }
 
+
 /* Listing styles start */
+
 .item-details {
     display: inline-block;
     text-align: center;
@@ -200,7 +207,8 @@ ul.carousel li {
     width: 80%;
 }
 
-.item-details p{ /* Override overarching p style modifier */
+.item-details p {
+    /* Override overarching p style modifier */
     text-align: center;
     left: 0px;
 }
@@ -226,7 +234,9 @@ aside.user-info {
     border: 1px solid black;
     float: right;
 }
-.user-info p{ /* Override overarching p style modifier */
+
+.user-info p {
+    /* Override overarching p style modifier */
     text-align: center;
     left: 0px;
 }
@@ -234,74 +244,100 @@ aside.user-info {
 p.gdpr-notice {
     font-size: 0.5rem;
 }
+
+
 /* Listing styles end */
+
 
 /* Login styles start */
 
 #log-logo {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top : 10%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
 }
 
 #log-form>fieldset {
-	text-align: center;
-	width : 20%;
-	display: block;
-	margin-right : auto;
-	margin-left : auto;
-	margin-top : 15px;
-	
-	min-width: 200px;
+    text-align: center;
+    width: 20%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 15px;
+    min-width: 200px;
 }
 
 #log-form>legend {
-	text-align: center;
-	font-family: "Arial", Arial, sans-serif;
+    text-align: center;
+    font-family: "Arial", Arial, sans-serif;
 }
 
 #log-form input {
-	border-radius : 5px;
-	font-family: "Arial", Arial, sans-serif;
-	margin-top: 10px;
-	width: 80%;
-	height: 30px;
-	text-align: center;
+    border-radius: 5px;
+    font-family: "Arial", Arial, sans-serif;
+    margin-top: 10px;
+    width: 80%;
+    height: 30px;
+    text-align: center;
 }
 
-#log-form input[type="submit"], input[type="button"]{
-	border: none;
-	font-weight: bold;
+#log-form input[type="submit"],
+input[type="button"] {
+    border: none;
+    font-weight: bold;
 }
 
-#log-form input[type="submit"]:hover{
-	background-color: #449d48;
-	cursor: pointer;
+#log-form input[type="submit"]:hover {
+    background-color: #449d48;
+    cursor: pointer;
 }
 
-#log-form input[type="button"]:hover{
-	background-color: #bcbcbc;
-	cursor: pointer;
+#log-form input[type="button"]:hover {
+    background-color: #bcbcbc;
+    cursor: pointer;
 }
 
 #log-form input[type="submit"] {
-	background-color: #4CAF50;
-	color : white;
+    background-color: #4CAF50;
+    color: white;
 }
 
 #log-form a {
-	text-align: center;
-	margin : 3.5%;
-	color : blue;
+    text-align: center;
+    margin: 3.5%;
+    color: blue;
 }
 
 #log-form a:hover {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 #log-form a:visited {
-  color: green;
+    color: green;
 }
 
+
 /* Login styles end */
+
+section#offer_form {
+    display: block;
+    width: 60%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 150px;
+    border: #4CAF50 solid;
+    border-radius: 10px;
+}
+
+#profile_pic {
+    position: static;
+    left: 50px;
+    right: 20px;
+}
+
+.account_page {
+    font-size: 16pt;
+    position: relative;
+    display: block;
+}

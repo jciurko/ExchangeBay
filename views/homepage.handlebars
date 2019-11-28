@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 	<head>
                 <title>Now you can make the worst deals ever</title>
@@ -7,72 +6,17 @@
                 <meta charset="utf-8">
                 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
                 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-               
-                                
-                
-                <meta name="description" content="The HTML5 Template">
-        <meta name="author" content="Joe Bloggs">
-        <link href="css/style.css" type="text/css" rel="stylesheet" />
+                <meta name="ExchangeBAY" content="Homepage">
+                <meta name="author" content="Jakub Ciurko">
+                <link href="css/style.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
-                <header>
-                        <section class="homepage">
-                        <h1 class="homepage">
-                                <a href='/'>ExchangeBAY</a></h1>
-
-                        <h2 class="homepage">Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
-
-                        <nav class="homepage">
-                                <tc><button>
-                                        <a href='login' target="_blank">Login</a>
-                                </button></tc>
-                                <tc><button><a href = 'register'>Register</a> </button> </tc>
-                                <tc><button><a href = "about">About</a> </button></tc>
-                        </nav>
-                        
-                        </section>
-                </header>
-        
-        
-                <h2>Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
-
-                <p>Exchange bay is an item for item exchange. 
-                It works simply by bidding on a sellers item with an item of your own instead of money. 
-                If the seller accepts the trade then congratulations on a sucessful trade
-                </p>
-
-                <section>
-
-                        <p>Items you may be interested in</p>
-
-                <button class="carousel_button">
-                                <img src="homepage_placeholders/left.jpg" alt="">
-                </button>
-                       
-                <ul class="carousel">
-
-                {{#each listings}}
-                    <li class="slide">
-                        <a href="/item/{{this.id}}">
-                            <img class="slider-thumbnail" src="/{{this.imgloc}}">
-                            <h4>{{this.itemname}}</h4>
-                            <p>{{this.itemdescription}}</p>
-                        </a>
-                    </li>
-                {{/each}}
-
-                </ul>
-                
-                <button class="carousel_button">
-                                <img src="homepage_placeholders/right.jpg" alt="">
-                </button>
-
-                </section>
-
-        
+                {{#if authorised}}
+                        {{>postLoginHeader}}
+                {{else}}
+                        {{> header}}
+                {{/if}}
+                {{> default_page}}
         </body>
-        <footer >Created by UncommunicativeTeam&trade; LTD &reg  
-                <button><a href = "https://www.google.com">Contact us</a></button>
-
-        </footer>
+        <footer >       {{> footer}}        </footer>
 </html>

@@ -1,4 +1,3 @@
-
 <!doctype html>
 
 <html lang="en">
@@ -21,7 +20,7 @@
 
             <nav class="homepage">
                     <tc><button>
-                            <a href='login' target="_blank">Login</a>
+                            <a href='login' >Login</a>
                     </button></tc>
                     <tc><button><a href = 'register'>Register</a> </button> </tc>
                     <tc><button><a href = "about">About</a> </button></tc>
@@ -30,19 +29,23 @@
         </section>
         
         </section>
+		
 		<section class="reg-form">
 			<h1 class="register">E<a class="middle">xchange</a>BAY
 				</h1>
 			<h2 class="register">Create an Account</h2>
+		
 			<!--<form action="/register" enctype="multipart/form-data" method="post">-->
-					<p>Username:<br /><input type="text" name="user" placeholder="your username(no spaces)" value="" size="20"></p>
-					<p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
-					<p>Confirm password:<br /><input type="password" name="pass" placeholder="repeat your password" value=""></p>
-					<p>Email address:<br /><input type="email" name="email" placeholder="your email" value=""></p>
-					<p>Profile Picture:<br /><input type="file" name="avatar">
-					<a href="#" class="myButton">Create</a></p>
-				
-		</form>
+			<form name='regForm' action="/register" enctype="multipart/form-data" onsubmit="return validateForm()" method="post">
+			<p>Username:<br /><input type="text" name="username" placeholder="your username(no spaces)" value="{{user}}" size="20"></p>
+			<p>Forename:<br /><input type="text" name="forename" placeholder="your username(no spaces)" value="" size="20"></p>
+			<p>Surname:<br /><input type="text" name="surname" placeholder="your username(no spaces)" value="" size="20" required></p>
+			<p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
+			{{!-- <p>Confirm password:<br /><input type="password" name="pass" placeholder="repeat your password" value=""></p> --}}
+			<p>Email address:<br /><input type="email" name="email" placeholder="your email" value=""></p>
+			<p>Profile Picture:<br /><input id="uploadBox" type="file"  name="avatar" >		
+			<input type="submit"  class="myButton" value="Create"></p>	
+			</form>
 		</section>
 	</body>
 </html>
