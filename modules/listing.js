@@ -72,6 +72,44 @@ class Listing {
 	}
 
 	/**
+     * Gets the names of all listings for a given user in an array
+     * @param {Integer} User ID
+     * @returns {Array} Array of listing names
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
+	async getListingNamesFromUserID(user_id) {
+		try {
+			if(user_id == null || user_id == ''){
+				throw new Error('no user id provided')
+			}else if(isNaN(user_id)){
+				throw new Error('non-numeric user id provided')
+			}
+
+			let user_exists_sql = `SELECT COUNT(user_id) as records FROM user WHERE user_id="${user_id}";`
+			const user_data = await this.db.get(user_exists_sql)
+			if(user_data.records == 0) throw new Error(`invalid user id provided`)
+
+			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item WHERE user_id="${user_id}";`
+			const listing_data = await this.db.get(listing_exists_sql)
+			if(listing_data.records == 0) throw new Error(`no listings found for user id ${user_id}`)
+
+			let sql = `SELECT item_name FROM item WHERE user_id="${user_id}";`
+			let results = []
+
+			const rows = await this.db.all(sql)
+
+			for(let i = 0; i < rows.length; i++){
+				results.push(rows[i].item_name)
+			}
+
+			return results
+
+		} catch(err) {
+			throw err
+		}
+	}
+
+	/**
      * Gets the metadata object literal for all listings in an array
      * @returns {Array} Array of ListingMetadata object literals
      * @throws Will throw an error if operation fails and provide descriptive reasoning
