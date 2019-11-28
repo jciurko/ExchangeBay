@@ -179,7 +179,7 @@ class Listing {
 		try {
 
 			await this.errorIfEmpty(userID.toString(), 'user_id')
-			await this.errorIfNaN(userID, "user_id")
+			await this.errorIfNaN(userID, 'user_id')
 			await this.errorIfEmpty(itemName, 'item_name')
 			await this.errorIfEmpty(itemDescription, 'item_description')
 			await this.errorIfEmpty(imgLocation, 'img_location')
