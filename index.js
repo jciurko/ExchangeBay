@@ -61,7 +61,6 @@ handlebars.registerHelper('forename', forename);
 handlebars.registerHelper('surname', surname);
 handlebars.registerHelper('email', email);
 
-
 /**
  * The home page.
  *

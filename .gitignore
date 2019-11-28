@@ -1,5 +1,25 @@
 
 .DS_Store
 node_modules/
-*.db
 screenshots/*
+
+data/
+coverage/
+sessions/
+screenshots/
+__image_snapshots_/
+__diff_output__/
+trace/
+.node-persist/
+
+*.db
+*snap.png
+*diff.png
+*trace.json
+*.0x
+
+*.pptx
+*.mp4
+
+*.codio
+*.c9

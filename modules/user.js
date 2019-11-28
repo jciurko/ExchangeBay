@@ -1,8 +1,8 @@
 'use strict'
 
 const bcrypt = require('bcrypt-promise')
-const fs = require('fs-extra')
-const mime = require('mime-types')
+// const fs = require('fs-extra')
+// const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
@@ -83,6 +83,7 @@ class User {
         }
     }
 
+
     /**
      * Get all database information for an user.
      * @param {String} email - The email of the user.
@@ -97,6 +98,10 @@ class User {
         } catch (err) {
             throw err
         }
+    }
+
+    async tearDown() {
+        await this.db.close()
     }
 }
 module.exports = User
