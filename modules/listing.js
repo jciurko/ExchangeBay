@@ -27,6 +27,7 @@ class Listing {
 	/** Object definition inspired by answer from Dan Dascalescu at https://stackoverflow.com/a/28763616
 	 * Metadata object used to render information in listing.handlebars
 	 * @typedef {Object} ListingMetadata
+	 * @property {Integer} lister_id The lister's User ID
 	 * @property {Integer} id The listing ID
 	 * @property {String} itemname The item name
 	 * @property {String} itemdescription The item description
