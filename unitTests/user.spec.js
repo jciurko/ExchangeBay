@@ -1,4 +1,3 @@
-
 'use strict'
 
 const Accounts = require('../modules/user.js')
@@ -26,7 +25,7 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('', 'password') )
-			.rejects.toEqual( Error('Username can\'t be empty') )
+			.rejects.toEqual( Error('username is empty') )
 		done()
 	})
 
@@ -34,7 +33,7 @@ describe('register()', () => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('doej', '') )
-			.rejects.toEqual( Error('Password can\'t be empty') )
+			.rejects.toEqual( Error('password is empty') )
 		done()
 	})
 
@@ -98,6 +97,27 @@ describe('login()', () => {
 		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
 		await expect( account.login('johndoe@email.com', 'bad') )
 			.rejects.toEqual( Error('invalid password for account "johndoe@email.com"') )
+		done()
+	})
+
+})
+
+describe('getUserData()', () => {
+
+	test('gets user email', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await account.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		const valid = await account.getUserData('johndoe@email.com')
+		expect(valid.email).toEqual('johndoe@email.com')
+		done()
+	})
+
+	test('check for no email', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		const valid = await account.getUserData('somerandomemail@email.com')
+		expect(valid).toEqual(undefined)
 		done()
 	})
 

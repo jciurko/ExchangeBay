@@ -68,7 +68,7 @@ describe('getListingNamesFromUserID()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.getListingNamesFromUserID('') )
-			.rejects.toEqual( Error('no user id provided') )
+			.rejects.toEqual( Error('user_id is empty') )
 		done()
 	})
 
@@ -76,7 +76,7 @@ describe('getListingNamesFromUserID()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.getListingNamesFromUserID('test') )
-			.rejects.toEqual( Error('non-numeric user id provided') )
+			.rejects.toEqual( Error('invalid user_id provided') )
 		done()
 	})
 
@@ -113,7 +113,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.create('', 'item_name', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('no user_id provided') )
+			.rejects.toEqual( Error('user_id is empty') )
 		done()
 	})
 
@@ -121,7 +121,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.create(1, '', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('no item_name provided') )
+			.rejects.toEqual( Error('item_name is empty') )
 		done()
 	})
 
@@ -129,7 +129,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.create(1, 'item_name', '', 'img_location') )
-			.rejects.toEqual( Error('no item_description provided') )
+			.rejects.toEqual( Error('item_description is empty') )
 		done()
 	})
 
@@ -137,7 +137,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.create(1, 'item_name', 'item_description', '') )
-			.rejects.toEqual( Error('no img_location provided') )
+			.rejects.toEqual( Error('img_location is empty') )
 		done()
 	})
 
@@ -145,7 +145,7 @@ describe('create()', () => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay-unittests.db')
 		await expect( listing.create('test', 'item_name', 'item_description', 'img_location') )
-			.rejects.toEqual( Error('non-numeric user_id provided') )
+			.rejects.toEqual( Error('invalid user_id provided') )
 		done()
 	})
 
