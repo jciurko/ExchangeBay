@@ -102,6 +102,7 @@ router.get('/item/:id', async ctx => {
     const parameters = ctx.params
     try {
         const data = await listing.getMetadata(parameters.id)
+        data.authorised = ctx.session.authorised
         await ctx.render('listing', data);
     } catch (err) {
         await ctx.render('homepage', { message: err.message })
