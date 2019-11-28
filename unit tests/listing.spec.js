@@ -44,6 +44,52 @@ describe('getMetadata()', () => {
 
 })
 
+describe('getListingNamesFromUserID()', () => {
+
+	test('get names from a valid user id', async done => {
+		expect.assertions(2)
+		const listing = await new Listing('exchangebay.db')
+		const data = await listing.getListingNamesFromUserID(1)
+		expect(data).toBeInstanceOf(Array)
+		expect(data.length).toBeGreaterThanOrEqual(0)
+		done()
+	})
+
+	test('get names from an invalid user id', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.getListingNamesFromUserID(-1) )
+			.rejects.toEqual( Error('invalid user id provided') )
+		done()
+	})
+
+	test('get names from a blank user id', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.getListingNamesFromUserID('') )
+			.rejects.toEqual( Error('no user id provided') )
+		done()
+	})
+
+	test('error with non-numeric user id', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.getListingNamesFromUserID('test') )
+			.rejects.toEqual( Error('non-numeric user id provided') )
+		done()
+	})
+
+	test('user with no listings', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay.db')
+		await expect( listing.getListingNamesFromUserID(9) )
+			.rejects.toEqual( Error('no listings found for user id 9') )
+		done()
+	})
+
+
+})
+
 describe('create()', () => {
 
 	test('create listing with valid info', async done => {

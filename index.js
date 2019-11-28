@@ -88,6 +88,7 @@ router.get('/about', async ctx => await ctx.render('about', { authorised: ctx.se
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
+    if (authorised !== true) throw new Error('Only logged in users can view listings.');
     // call the functions in the listing module
     const listing = await new Listing(dbName)
     const parameters = ctx.params
