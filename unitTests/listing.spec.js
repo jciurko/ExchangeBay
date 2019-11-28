@@ -82,8 +82,8 @@ describe('getListingNamesFromUserID()', () => {
 	test('user with no listings', async done => {
 		expect.assertions(1)
 		const listing = await new Listing('exchangebay.db')
-		await expect( listing.getListingNamesFromUserID(9) )
-			.rejects.toEqual( Error('no listings found for user id 9') )
+		const listings = listing.getListingNamesFromUserID(9)
+		expect(listings.length).toEqual(undefined)
 		done()
 	})
 
