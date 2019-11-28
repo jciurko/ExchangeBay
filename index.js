@@ -88,7 +88,7 @@ router.get('/about', async ctx => await ctx.render('about', { authorised: ctx.se
  * @route {GET} /item/{id}
  */
 router.get('/item/:id', async ctx => {
-    if (authorised !== true) throw new Error('Only logged in users can view listings.');
+    if (ctx.session.authorised !== true) throw new Error('Only logged in users can view listings.');
     // call the functions in the listing module
     const listing = await new Listing(dbName)
     const parameters = ctx.params
@@ -194,8 +194,9 @@ router.post('/createAnOffer', koaBody, async ctx => {
         console.log(Object.keys(body))
         const { path, type } = ctx.request.files.item_img
         const listing = await new Listing(dbName)
-        await listing.create(user_id, item_name, body.item_description, `database_images/${username}stutaj${item_name}.jpg`)
-        await fs.copy(path, `public/database_images/${username}\'s${item_name}.png`)
+        const filename = `database_images/${ctx.session.username}s${item_name}.png`
+        await listing.create(ctx.session.user_id, item_name, body.item_description, filename)
+        await fs.copy(path, `public/${filename}`)
 
         ctx.redirect(`/?msg=new offer "${body.item_name}" added`)
     } catch (err) {
