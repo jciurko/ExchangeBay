@@ -6,12 +6,12 @@ const bcrypt = require('bcrypt-promise')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
-/** 
+/**
  * Class that handles user operations.
  * */
 class User {
 
-    /**
+	/**
      * Initialises database and adds 'users' table if it does not already exist
      * @constructor
      * @param {String} [dbName] - The name of the database. Defaults to :memory:
@@ -27,7 +27,19 @@ class User {
 		})()
 	}
 
-    /**
+	/**
+     * Throws an error including input name if variable is empty
+     * @param {Object} input - The username of the new user.
+     * @param {String} varName - The password of the new user.
+     * @throws Will throw an error if variable is epty and provide contextual name
+     */
+	async errorIfEmpty(input, varName) {
+		if(input === null || input === '' || input.length === 0) {
+			throw new Error(`${varName} is empty`)
+		}
+	}
+
+	/**
      * Register an user. This checks for existing entries for a given username
      * @param {String} username - The username of the new user.
      * @param {String} password - The password of the new user.
@@ -37,93 +49,96 @@ class User {
      * @returns {Boolean} True on success, throws an error error on failure
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-    async register(user, pass, forename, surname, email) {
-        try {
+	async register(user, pass, forename, surname, email) {
+		try {
 
-            var patt1 = /[ ]/g; // exclude <these> characters from username and password
-            if (user === '' || user.match(patt1) != null) throw new Error('Username can\'t be empty') //async ctx => ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username') // new Error('Incorrect username') //return ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username')
-            if (pass === '' || pass.match(patt1) != null) throw new Error('Password can\'t be empty') //return ctx.redirect('/register?msg=invalid%20username.%20Password%20has%20to%20contain%20characters')
-            if (forename.length === 0) throw new Error('missing forename')
-            if (surname.length === 0) throw new Error('missing surname')
-            if (email.length === 0) throw new Error('missing email')
-            let sqlUser = `SELECT COUNT(user_id) as records FROM user WHERE username="${user}";`
-            const dataUser = await this.db.get(sqlUser)
-            if (dataUser.records !== 0) throw new Error(`username "${user}" already in use`)
-            let sqlEmail = `SELECT COUNT(user_id) as records FROM user WHERE email="${email}";`
-            const dataEmail = await this.db.get(sqlEmail)
-            if (dataEmail.records !== 0) throw new Error(`email "${email}" already in use`)
-            pass = await bcrypt.hash(pass, saltRounds)
-            let sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
-            await this.db.run(sql)
-            return true
-        } catch (err) {
-            throw err
-        }
-    }
 
-    /**
+			await this.errorIfEmpty(user, 'username')
+			await this.errorIfEmpty(pass, 'password')
+			await this.errorIfEmpty(forename, 'forename')
+			await this.errorIfEmpty(surname, 'surname')
+			await this.errorIfEmpty(email, 'email')
+			const patt1 = /[ ]/g // exclude <these> characters from username and password
+			/*if (user === '' || user.match(patt1) !== null) throw new Error('Username can\'t be empty') //async ctx => ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username') // new Error('Incorrect username') //return ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username')
+			if (pass === '' || pass.match(patt1) !== null) throw new Error('Password can\'t be empty') //return ctx.redirect('/register?msg=invalid%20username.%20Password%20has%20to%20contain%20characters')*/
+			const sqlUser = `SELECT COUNT(user_id) as records FROM user WHERE username="${user}";`
+			const dataUser = await this.db.get(sqlUser)
+			if (dataUser.records !== 0) throw new Error(`username "${user}" already in use`)
+			const sqlEmail = `SELECT COUNT(user_id) as records FROM user WHERE email="${email}";`
+			const dataEmail = await this.db.get(sqlEmail)
+			if (dataEmail.records !== 0) throw new Error(`email "${email}" already in use`)
+			pass = await bcrypt.hash(pass, saltRounds)
+			const sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
+			await this.db.run(sql)
+			return true
+		} catch (err) {
+			throw err
+		}
+	}
+
+	/**
      * Login an user.
      * @param {String} email - The email of the user.
      * @param {String} password - The password of the user.
      * @returns {Boolean} True on success, throws an error error on failure
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-    async login(email, password) {
-        try {
-            let sql = `SELECT count(user_id) AS count FROM user WHERE email="${email}";`
-            const records = await this.db.get(sql)
-            if (!records.count) throw new Error(`email "${email}" not found`)
-            sql = `SELECT password FROM user WHERE email= "${email}";`
-            const record = await this.db.get(sql)
-            const valid = await bcrypt.compare(password, record.password)
-            if (valid === false) throw new Error(`invalid password for account "${email}"`)
-            return true
-        } catch (err) {
-            throw err
-        }
-    }
+	async login(email, password) {
+		try {
+			let sql = `SELECT count(user_id) AS count FROM user WHERE email="${email}";`
+			const records = await this.db.get(sql)
+			if (!records.count) throw new Error(`email "${email}" not found`)
+			sql = `SELECT password FROM user WHERE email= "${email}";`
+			const record = await this.db.get(sql)
+			const valid = await bcrypt.compare(password, record.password)
+			if (valid === false) throw new Error(`invalid password for account "${email}"`)
+			return true
+		} catch (err) {
+			throw err
+		}
+	}
 
 
-    /**
+	/**
      * Get all database information for an user.
      * @param {String} email - The email of the user.
      * @returns {Array} Array of user data for the given email
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-    async getUserData(email) {
-        try {
-            let sql = `SELECT * FROM user WHERE email= "${email}";`
-            const record = await this.db.get(sql)
-            return record
-        } catch (err) {
-            throw err
-        }
-    }
+	async getUserData(email) {
+		try {
+			const sql = `SELECT * FROM user WHERE email= "${email}";`
+			const record = await this.db.get(sql)
+			return record
+		} catch (err) {
+			throw err
+		}
+	}
 
-    /**
+	/**
      * Get all database information for an user from an user_id.
      * @param {Integer} user_id - The user_id of the user.
      * @returns {Array} Array of user data for the given email
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-    async getUserDataFromID(user_id) {
-        try {
-            if(isNaN(user_id)){
-                throw new Error('non-numeric id provided');
-            }
-            let existsCheck = `SELECT count(user_id) AS count FROM user WHERE user_id="${user_id}";`
-            const existsRecords = await this.db.get(existsCheck)
-            if (!existsRecords.count) throw new Error(`user with id "${user_id}" not found`)
-            let sql = `SELECT * FROM user WHERE user_id="${user_id}";`
-            const record = await this.db.get(sql)
-            return record
-        } catch (err) {
-            throw err
-        }
-    }
+	async getUserDataFromID(userId) {
+		try {
+			if(isNaN(userId)) {
+				throw new Error('non-numeric id provided')
+			}
+			const existsCheck = `SELECT count(user_id) AS count FROM user WHERE user_id="${userId}";`
+			const existsRecords = await this.db.get(existsCheck)
+			if (!existsRecords.count) throw new Error(`user with id "${userId}" not found`)
+			const sql = `SELECT * FROM user WHERE user_id="${userId}";`
+			const record = await this.db.get(sql)
+			return record
+		} catch (err) {
+			throw err
+		}
+	}
 
-    async tearDown() {
-        await this.db.close()
-    }
+	async tearDown() {
+		await this.db.close()
+	}
 }
 module.exports = User
