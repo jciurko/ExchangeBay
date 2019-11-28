@@ -2,6 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('log-register').addEventListener('click', () => {
-		window.location.href='register';
-	  });
+		window.location.href='register'
+	  })
 })

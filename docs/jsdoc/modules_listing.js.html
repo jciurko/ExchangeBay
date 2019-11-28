@@ -31,7 +31,7 @@
 
 const sqlite = require('sqlite-async')
 
-/** 
+/**
  * Class that handles listing operations.
  * */
 class Listing {
@@ -52,9 +52,22 @@ class Listing {
 		})()
 	}
 
+	/**
+     * Throws an error including input name if variable is empty
+     * @param {Object} input - The username of the new user.
+     * @param {String} varName - The password of the new user.
+     * @throws Will throw an error if variable is epty and provide contextual name
+     */
+	async errorIfEmpty(input, varName) {
+		if(input === null || input === '' || input.length === 0) {
+			throw new Error(`${varName} is empty`)
+		}
+	}
+
 	/** Object definition inspired by answer from Dan Dascalescu at https://stackoverflow.com/a/28763616
 	 * Metadata object used to render information in listing.handlebars
 	 * @typedef {Object} ListingMetadata
+	 * @property {Integer} lister_id The lister's User ID
 	 * @property {Integer} id The listing ID
 	 * @property {String} itemname The item name
 	 * @property {String} itemdescription The item description
@@ -65,35 +78,70 @@ class Listing {
 
 	/**
      * Gets the metadata object literal for a given listing
-     * @param {Integer} listing_id - The ID of the listing/item
+     * @param {Integer} listingId - The ID of the listing/item
      * @returns {ListingMetadata} ListingMetadata object literal
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
-	async getMetadata(listing_id) {
+	async getMetadata(listingId) {
 		try {
-			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item WHERE item_id="${listing_id}";`
-			const data = await this.db.get(listing_exists_sql)
-			if(data.records == 0) throw new Error(`listing with ID "${listing_id}" not found`)
-			let sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc FROM item WHERE item_id="${listing_id}";`
+			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE item_id="${listingId}";`
+			const data = await this.db.get(listingExistsSql)
+			if(data.records === 0) throw new Error(`listing with ID "${listingId}" not found`)
+			const sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc FROM item WHERE item_id="${listingId}";`
 			const record = await this.db.get(sql)
-			
-			let lister = record.user_id
 
-			let item = {
+			const lister = record.user_id
+
+			const item = {
+				lister_id: lister,
 				id: record.item_id,
 				itemname: record.item_name,
 				itemdescription: record.item_description,
 				imgloc: record.item_img_loc
 			}
 
-			let username_grab_sql = `SELECT username FROM user WHERE user_id="${lister}";`
-			const username_record = await this.db.get(username_grab_sql)
+			const usernameGrabSql = `SELECT username FROM user WHERE user_id="${lister}";`
+			const usernameRecord = await this.db.get(usernameGrabSql)
 
-			item.listerusername = username_record.username
+			item.listerusername = usernameRecord.username
 
-			item.swaplist = "Placeholder, Placeholder Second, Placeholder Third" //Placeholder until I figure out schema
+			item.swaplist = 'Placeholder, Placeholder Second, Placeholder Third' //Placeholder until I figure out schema
 
 			return item
+		} catch(err) {
+			throw err
+		}
+	}
+
+	/**
+     * Gets the names of all listings for a given user in an array
+     * @param {Integer} User ID
+     * @returns {Array} Array of listing names
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
+	async getListingNamesFromUserID(userID) {
+		try {
+			await this.errorIfEmpty(userID.toString(), 'user_id')
+
+			if(isNaN(userID)) {
+				throw new Error('non-numeric user id provided')
+			}
+
+			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE user_id="${userID}";`
+			const listingData = await this.db.get(listingExistsSql)
+			if(listingData.records === 0) return []
+
+			const sql = `SELECT item_name FROM item WHERE user_id="${userID}";`
+			const results = []
+
+			const rows = await this.db.all(sql)
+
+			for(let i = 0; i &lt; rows.length; i++) {
+				results.push(rows[i].item_name)
+			}
+
+			return results
+
 		} catch(err) {
 			throw err
 		}
@@ -106,23 +154,23 @@ class Listing {
      */
 	async getListings() {
 		try {
-			let listing_exists_sql = `SELECT COUNT(item_id) as records FROM item;`
-			const data = await this.db.get(listing_exists_sql)
-			if(data.records == 0) throw new Error(`no listings found`)
-			let sql = `SELECT item_id, item_name, item_description, item_img_loc FROM item;`
-			let results = []
+			const listingExistsSql = 'SELECT COUNT(item_id) as records FROM item;'
+			const data = await this.db.get(listingExistsSql)
+			if(data.records === 0) throw new Error('no listings found')
+			const sql = 'SELECT item_id, item_name, item_description, item_img_loc FROM item;'
+			const results = []
 
 			const rows = await this.db.all(sql)
 
-			for(let i = 0; i &lt; rows.length; i++){
+			for(let i = 0; i &lt; rows.length; i++) {
 
-				let item = {
+				const item = {
 					id: rows[i].item_id,
 					itemname: rows[i].item_name,
 					itemdescription: rows[i].item_description,
 					imgloc: rows[i].item_img_loc,
-					listerusername: "", //not viewable for logged out users
-					swaplist: "" //not viewable for logged out users
+					listerusername: '', //not viewable for logged out users
+					swaplist: '' //not viewable for logged out users
 				}
 
 				results.push(item)
@@ -137,29 +185,26 @@ class Listing {
 
 	/**
      * Creates a listing and returns the listing ID. Does not check if the data is valid
-     * @param {Integer} user_id - The ID of the listing/item
-     * @param {String} item_name - Name of the item being listed
-     * @param {String} item_description - Description of the item listing
-     * @param {String} img_location - Relative filepath from webroot to the item image
+     * @param {Integer} userID - The ID of the listing/item
+     * @param {String} itemName - Name of the item being listed
+     * @param {String} itemDescription - Description of the item listing
+     * @param {String} imgLocation - Relative filepath from webroot to the item image
      * @returns {Integer} ID of new listing
      */
-	async create(user_id, item_name, item_description,  img_location) {
+	async create(userID, itemName, itemDescription, imgLocation) {
 		try {
 
-			if(isNaN(user_id)){
+			if(isNaN(userID)) {
 				throw new Error('non-numeric user_id provided')
-			}else if(user_id.toString().length == 0){
-				throw new Error('no user_id provided')
-			}else if(item_name.length == 0){
-				throw new Error('no item_name provided')
-			}else if(item_description.length == 0){
-				throw new Error('no item_description provided')
-			}else if(img_location.length == 0){
-				throw new Error('no img_location provided')
 			}
 
-			let sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${user_id}, '${item_name}', '${item_description}', '${img_location}');`
-			let query = await this.db.run(sql)
+			await this.errorIfEmpty(userID.toString(), 'user_id')
+			await this.errorIfEmpty(itemName, 'item_name')
+			await this.errorIfEmpty(itemDescription, 'item_description')
+			await this.errorIfEmpty(imgLocation, 'img_location')
+
+			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
+			const query = await this.db.run(sql)
 			return query.lastID
 		} catch(err) {
 			throw err
@@ -168,7 +213,8 @@ class Listing {
 
 }
 
-module.exports = Listing</code></pre>
+module.exports = Listing
+</code></pre>
         </article>
     </section>
 
@@ -178,13 +224,13 @@ module.exports = Listing</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Account Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Offer creation Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Listing.html">Listing</a></li><li><a href="Mailer.html">Mailer</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html">About Page</a></li><li><a href="global.html">Home Page</a></li><li><a href="global.html">Listing Page</a></li><li><a href="global.html">Login Page</a></li><li><a href="global.html">Login Script</a></li><li><a href="global.html">Logout Page</a></li><li><a href="global.html">Register Page</a></li><li><a href="global.html">Register Script</a></li><li><a href="global.html">Trade Offer Script</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Nov 27 2019 23:55:25 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 28 2019 21:49:13 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
