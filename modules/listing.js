@@ -192,8 +192,8 @@ class Listing {
 			matchingItems.push(item)
 		}
 
-		return matchingItems;
-			
+		return matchingItems
+
 	}
 
 	/**
