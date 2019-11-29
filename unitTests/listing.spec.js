@@ -202,3 +202,28 @@ describe('getListings()', () => {
 	})
 
 })
+
+
+
+describe('getItemsFromSearchTerm()', () => {
+
+	test('return items from valid search', async done => {
+		expect.assertions(2)
+		const listing = await new Listing('exchangebay-unittests.db')
+		const data = await listing.querySearchTerm('t')
+		expect(data).toBeInstanceOf(Array)
+		expect(data.length).toBeGreaterThanOrEqual(0)
+		done()
+	})
+
+
+	test('Return no items from search matching zero items', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay-unittests.db')
+		const items = listing.querySearchTerm('zxcvuaveuvuyceuweyrcfwysvweifgyhrfgbd')
+		expect(items.length).toEqual(undefined)
+		done()
+	})
+
+
+})
