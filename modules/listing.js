@@ -175,29 +175,25 @@ class Listing {
      * @throws Will throw an error if operation fails and provide descriptive reasoning
      */
 	async querySearchTerm(searchTerm) {
-		try {
 
-			const sql = `SELECT item_id, item_name, item_description, item_img_loc, LOWER(item_name) as lowerItemName FROM item WHERE lowerItemName LIKE '%${searchTerm.toLowerCase()}%';`
-			const sqlResult = await this.db.all(sql)
+		const sql = `SELECT item_id, item_name, item_description, item_img_loc, LOWER(item_name) as lowerItemName FROM item WHERE lowerItemName LIKE '%${searchTerm.toLowerCase()}%';`
+		const sqlResult = await this.db.all(sql)
 
-			const matchingItems = []
-			for(let i = 0; i < sqlResult.length; i++) {
+		const matchingItems = []
+		for(let i = 0; i < sqlResult.length; i++) {
 
-				const item = {
-					id: sqlResult[i].item_id,
-					itemname: sqlResult[i].item_name,
-					itemdescription: sqlResult[i].item_description,
-					imgloc: sqlResult[i].item_img_loc,
-				}
-
-				matchingItems.push(item)
+			const item = {
+				id: sqlResult[i].item_id,
+				itemname: sqlResult[i].item_name,
+				itemdescription: sqlResult[i].item_description,
+				imgloc: sqlResult[i].item_img_loc,
 			}
 
-			return matchingItems;
-			
-		}catch(err) {
-			throw err
+			matchingItems.push(item)
 		}
+
+		return matchingItems;
+			
 	}
 
 	/**
@@ -209,17 +205,20 @@ class Listing {
      * @returns {Integer} ID of new listing
      */
 	async create(userID, itemName, itemDescription, imgLocation) {
+		try {
 
-		await this.errorIfEmpty(userID.toString(), 'user_id')
-		await this.errorIfNaN(userID, 'user_id')
-		await this.errorIfEmpty(itemName, 'item_name')
-		await this.errorIfEmpty(itemDescription, 'item_description')
-		await this.errorIfEmpty(imgLocation, 'img_location')
+			await this.errorIfEmpty(userID.toString(), 'user_id')
+			await this.errorIfNaN(userID, 'user_id')
+			await this.errorIfEmpty(itemName, 'item_name')
+			await this.errorIfEmpty(itemDescription, 'item_description')
+			await this.errorIfEmpty(imgLocation, 'img_location')
 
-		const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
-		const query = await this.db.run(sql)
-		return query.lastID
-
+			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
+			const query = await this.db.run(sql)
+			return query.lastID
+		} catch(err) {
+			throw err
+		}
 	}
 
 }
