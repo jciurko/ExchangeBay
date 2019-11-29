@@ -209,20 +209,17 @@ class Listing {
      * @returns {Integer} ID of new listing
      */
 	async create(userID, itemName, itemDescription, imgLocation) {
-		try {
 
-			await this.errorIfEmpty(userID.toString(), 'user_id')
-			await this.errorIfNaN(userID, 'user_id')
-			await this.errorIfEmpty(itemName, 'item_name')
-			await this.errorIfEmpty(itemDescription, 'item_description')
-			await this.errorIfEmpty(imgLocation, 'img_location')
+		await this.errorIfEmpty(userID.toString(), 'user_id')
+		await this.errorIfNaN(userID, 'user_id')
+		await this.errorIfEmpty(itemName, 'item_name')
+		await this.errorIfEmpty(itemDescription, 'item_description')
+		await this.errorIfEmpty(imgLocation, 'img_location')
 
-			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
-			const query = await this.db.run(sql)
-			return query.lastID
-		} catch(err) {
-			throw err
-		}
+		const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
+		const query = await this.db.run(sql)
+		return query.lastID
+
 	}
 
 }
