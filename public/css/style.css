@@ -108,6 +108,26 @@ section.homepage {
     background-color: #252525;
 }
 
+section.homepage form {
+    margin-left: 50%;
+    padding: 0;
+    padding-bottom: 5px;
+}
+
+section.homepage form input[type=text]{
+    width: 30%;
+    height: 30px;
+    float: left;
+    margin: 0;
+}
+
+section.homepage form input[type=submit]{
+    width: 75px;
+    height: 30px;
+    float: left;
+    margin: 0;
+}
+
 img.slider-thumbnail {
     height: 128px;
     width: 128px;
