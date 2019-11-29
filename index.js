@@ -268,7 +268,7 @@ router.post('/createAnOffer', koaBody, async ctx => {
 		const { path, type } = ctx.request.files.item_img
 		const listing = await new Listing(dbName)
 		const filename = `database_images/${ctx.session.username}s${itemName}.png`
-		await listing.create(ctx.session.user_id, itemName, body.item_description, filename)
+		await listing.create(ctx.session.user_id, itemName, body.item_description, filename, body.price)
 		await fs.copy(path, `public/${filename}`)
 
 		ctx.redirect(`/?msg=new offer "${itemName}" added`)

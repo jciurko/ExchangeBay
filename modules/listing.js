@@ -18,7 +18,7 @@ class Listing {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS item (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, user_id INTEGER REFERENCES user (user_id) NOT NULL, item_name VARCHAR (50) NOT NULL, item_description VARCHAR (250) NOT NULL, item_img_loc VARCHAR (50) NOT NULL); CREATE TABLE IF NOT EXISTS trade (swap_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, buying_id INTEGER REFERENCES item (item_id) NOT NULL, selling_id INTEGER REFERENCES item (item_id) NOT NULL)'
+			const sql = 'CREATE TABLE IF NOT EXISTS item (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, user_id INTEGER REFERENCES user (user_id) NOT NULL, item_name VARCHAR (50) NOT NULL, item_description VARCHAR (250) NOT NULL, item_img_loc VARCHAR (50) NOT NULL, swap VARCHAR(500) NOT NULL); CREATE TABLE IF NOT EXISTS trade (swap_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, buying_id INTEGER REFERENCES item (item_id) NOT NULL, selling_id INTEGER REFERENCES item (item_id) NOT NULL)'
 			await this.db.run(sql)
 			return this
 		})()
@@ -71,25 +71,28 @@ class Listing {
 			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE item_id="${listingId}";`
 			const data = await this.db.get(listingExistsSql)
 			if(data.records === 0) throw new Error(`listing with ID "${listingId}" not found`)
-			const sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc FROM item WHERE item_id="${listingId}";`
+			const sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc, swap FROM item WHERE item_id="${listingId}";`
 			const record = await this.db.get(sql)
 
 			const lister = record.user_id
+
+			if(record.swap === null) {
+				record.swap = 'Nothing provided.'
+			}
 
 			const item = {
 				lister_id: lister,
 				id: record.item_id,
 				itemname: record.item_name,
 				itemdescription: record.item_description,
-				imgloc: record.item_img_loc
+				imgloc: record.item_img_loc,
+				swaplist: record.swap
 			}
 
 			const usernameGrabSql = `SELECT username FROM user WHERE user_id="${lister}";`
 			const usernameRecord = await this.db.get(usernameGrabSql)
 
 			item.listerusername = usernameRecord.username
-
-			item.swaplist = 'Placeholder, Placeholder Second, Placeholder Third' //Placeholder until I figure out schema
 
 			return item
 		} catch(err) {
@@ -202,9 +205,10 @@ class Listing {
      * @param {String} itemName - Name of the item being listed
      * @param {String} itemDescription - Description of the item listing
      * @param {String} imgLocation - Relative filepath from webroot to the item image
+     * @param {String} swapList - List of items willing to swap
      * @returns {Integer} ID of new listing
      */
-	async create(userID, itemName, itemDescription, imgLocation) {
+	async create(userID, itemName, itemDescription, imgLocation, swapList) {
 		try {
 
 			await this.errorIfEmpty(userID.toString(), 'user_id')
@@ -213,7 +217,7 @@ class Listing {
 			await this.errorIfEmpty(itemDescription, 'item_description')
 			await this.errorIfEmpty(imgLocation, 'img_location')
 
-			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}');`
+			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc, swap) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}', '${swapList}');`
 			const query = await this.db.run(sql)
 			return query.lastID
 		} catch(err) {
