@@ -295,11 +295,7 @@ router.get('/search', async ctx => {
         let searchResult = await listing.querySearchTerm(ctx.query.searchTerm);
         let items = [];
         for(let i = 0; i < searchResult.length;i++){
-            let data = {
-                id: i,
-                name: searchResult[i]
-            }
-            items.push(data);
+            items.push(searchResult[i]);
         }
 		await ctx.render('search', {searchResult: items});
 	}catch(err){
