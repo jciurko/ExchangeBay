@@ -204,7 +204,6 @@ describe('getListings()', () => {
 })
 
 
-
 describe('getItemsFromSearchTerm()', () => {
 
 	test('return items from valid search', async done => {
@@ -239,7 +238,6 @@ describe('getItemsFromSearchTerm()', () => {
 		}
 		done()
 	})
-
 
 
 })

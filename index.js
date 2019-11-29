@@ -288,18 +288,18 @@ router.get('/accountPage', async ctx => {
 })
 
 router.get('/search', async ctx => {
-    try{
-        
-        const listing = await new Listing(dbName);
+	try{
 
-        let searchResult = await listing.querySearchTerm(ctx.query.searchTerm);
-        let items = [];
-        for(let i = 0; i < searchResult.length;i++){
-            items.push(searchResult[i]);
-        }
-		await ctx.render('search', {searchResult: items});
-	}catch(err){
-		await ctx.render('error', {message: err.message});
+		const listing = await new Listing(dbName)
+
+		const searchResult = await listing.querySearchTerm(ctx.query.searchTerm)
+		const items = []
+		for(let i = 0; i < searchResult.length;i++) {
+			items.push(searchResult[i])
+		}
+		await ctx.render('search', {searchResult: items})
+	}catch(err) {
+		await ctx.render('error', {message: err.message})
 	}
 })
 
