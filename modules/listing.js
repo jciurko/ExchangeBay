@@ -76,8 +76,8 @@ class Listing {
 
 			const lister = record.user_id
 
-			if(record.swap === null){
-				record.swap = "Nothing provided."
+			if(record.swap === null) {
+				record.swap = 'Nothing provided.'
 			}
 
 			const item = {
