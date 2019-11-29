@@ -301,7 +301,7 @@ router.get('/search', async ctx => {
             }
             items.push(data);
         }
-		await ctx.render('search', items);
+		await ctx.render('search', {searchResult: items});
 	}catch(err){
 		await ctx.render('error', {message: err.message});
 	}
