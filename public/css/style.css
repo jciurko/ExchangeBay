@@ -109,9 +109,9 @@ section.homepage {
 }
 
 section.homepage form {
-    margin-left: 50%;
+    margin-left: 40%;
     padding: 0;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
 }
 
 section.homepage form input[type=text]{
