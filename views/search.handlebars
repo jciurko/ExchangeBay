@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Log In</title>
+	<meta name="description" content="form to add new books">
+	<meta name="author" content="Mark Tyers">
+	<link href="css/style.css" type="text/css" rel="stylesheet" />
+	<script src="js/login.js"></script>
+</head>
+
+<body>
+	<header>
+		<section class="homepage">
+			<h1 class="homepage">
+                                <a href='/'>ExchangeBAY</a></h1>
+
+			<h2 class="homepage">Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
+
+			<nav class="homepage">
+				<tc><button>
+						<a href='login' >Login</a>
+					</button></tc>
+				<tc><button><a href='register'>Register</a> </button> </tc>
+				<tc><button><a href="about">About</a> </button></tc>
+			</nav>
+
+		</section>
+	</header>
+
+    <title>Search for {{query}}</title>
+
+    <ul class="search_list">
+
+        {{#each searchResult}}
+        <li class="search_item">  
+            <a href="/item/{{this.id}}">
+                <img class="slider-thumbnail" src="/{{this.imgloc}}">
+                <h4>{{this.itemname}}</h4>
+                <br/>
+                <p>{{this.itemdescription}}</p> 
+            </a>
+        </li>
+        {{/each}}
+
+    </ul>
+
+</body>
+
+</html>

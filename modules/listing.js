@@ -167,6 +167,35 @@ class Listing {
 		}
 	}
 
+
+	/**
+     * Returns a list of items matching a search query
+	 * @param {String} Search term to query
+     * @returns {Array} Array of item objects
+     * @throws Will throw an error if operation fails and provide descriptive reasoning
+     */
+	async querySearchTerm(searchTerm) {
+
+		const sql = `SELECT item_id, item_name, item_description, item_img_loc, LOWER(item_name) as lowerItemName FROM item WHERE lowerItemName LIKE '%${searchTerm.toLowerCase()}%';`
+		const sqlResult = await this.db.all(sql)
+
+		const matchingItems = []
+		for(let i = 0; i < sqlResult.length; i++) {
+
+			const item = {
+				id: sqlResult[i].item_id,
+				itemname: sqlResult[i].item_name,
+				itemdescription: sqlResult[i].item_description,
+				imgloc: sqlResult[i].item_img_loc,
+			}
+
+			matchingItems.push(item)
+		}
+
+		return matchingItems;
+			
+	}
+
 	/**
      * Creates a listing and returns the listing ID. Does not check if the data is valid
      * @param {Integer} userID - The ID of the listing/item

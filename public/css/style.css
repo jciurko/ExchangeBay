@@ -108,6 +108,26 @@ section.homepage {
     background-color: #252525;
 }
 
+section.homepage form {
+    margin-left: 40%;
+    padding: 0;
+    padding-bottom: 10px;
+}
+
+section.homepage form input[type=text]{
+    width: 30%;
+    height: 30px;
+    float: left;
+    margin: 0;
+}
+
+section.homepage form input[type=submit]{
+    width: 75px;
+    height: 30px;
+    float: left;
+    margin: 0;
+}
+
 img.slider-thumbnail {
     height: 128px;
     width: 128px;
@@ -196,6 +216,51 @@ input[type=text],
 ul.carousel li {
     display: inline;
 }
+
+/* Search styling start */
+ul.search_list {
+    list-style-type: none;
+    padding: 0;
+    color: black;
+}
+
+ul.search_list li {
+    width: 100%;
+    height: 130px;
+
+    background-color:#ffffff;
+}
+
+ul.search_list li a{
+    width: 100%;
+    height: 130px;
+    color: black;
+}
+
+ul.search_list li a h4{
+    float: left;
+    margin-left: 20px;
+}
+
+ul.search_list li a p{
+    float: left;
+    padding: 0;
+    margin-left: 0;
+}
+
+ul.search_list li:nth-child(even) {
+    background: #e5e5e5;
+}
+
+ul.search_list li:hover {
+    background: #b2b2b2;
+}
+
+ul.search_list a img {
+    float: left;
+}
+
+/* Search styling end */
 
 
 /* Listing styles start */

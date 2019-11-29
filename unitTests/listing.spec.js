@@ -202,3 +202,44 @@ describe('getListings()', () => {
 	})
 
 })
+
+
+
+describe('getItemsFromSearchTerm()', () => {
+
+	test('return items from valid search', async done => {
+		expect.assertions(2)
+		const listing = await new Listing('exchangebay-unittests.db')
+		const data = await listing.querySearchTerm('t')
+		expect(data).toBeInstanceOf(Array)
+		expect(data.length).toBeGreaterThanOrEqual(0)
+		done()
+	})
+
+
+	test('return no items from search matching zero items', async done => {
+		expect.assertions(1)
+		const listing = await new Listing('exchangebay-unittests.db')
+		const items = listing.querySearchTerm('zxcvuaveuvuyceuweyrcfwysvweifgyhrfgbd')
+		expect(items.length).toEqual(undefined)
+		done()
+	})
+
+	test('search query returns valid items', async done => {
+		const listing = await new Listing('exchangebay-unittests.db')
+		const data = await listing.querySearchTerm('t')
+
+		expect.assertions(data.length * 4)
+
+		for(let i = 0; i < data.length; i++) {
+			expect(data[i]).toHaveProperty('id')
+			expect(data[i]).toHaveProperty('itemname')
+			expect(data[i]).toHaveProperty('itemdescription')
+			expect(data[i]).toHaveProperty('imgloc')
+		}
+		done()
+	})
+
+
+
+})
