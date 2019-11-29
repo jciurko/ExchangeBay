@@ -33,23 +33,18 @@
     <title>Search for {{query}}</title>
 
     <ul class="search_list">
-        <li class="search_item">
-            <a href="/item/0">
-                <img class="slider-thumbnail" src="/database_images/BillyB0b_Clock.jpg">
-                <h4>test item</h4>
-                <p>Lorem ipsum dollar amet</p>
-            </a>
-        </li>
 
         {{#each searchResult}}
-        <li class="search_item">
+        <li class="search_item">  
             <a href="/item/{{this.id}}">
                 <img class="slider-thumbnail" src="/{{this.imgloc}}">
                 <h4>{{this.itemname}}</h4>
-                <p>{{this.itemdescription}}</p>
+                <br/>
+                <p>{{this.itemdescription}}</p> 
             </a>
         </li>
         {{/each}}
+
     </ul>
 
 </body>
