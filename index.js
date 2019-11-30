@@ -170,7 +170,7 @@ ExchangeBay.`
 		console.log(listerInfo)
 		await mailer.sendEmailTo(listerInfo.email, `New trade offer for your item '${listingInfo.itemname}'`, msg)
 
-		await ctx.render('homepage', {authorised: ctx.session.authorised, message: 'Your trade offer has been sent successfully!'})
+		await ctx.redirect('/?msg=Your trade offer has been sent successfully!')
 	}catch(err) {
 		await ctx.render('error', {authorised: ctx.session.authorised, message: err.message})
 	}
