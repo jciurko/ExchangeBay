@@ -160,6 +160,8 @@ The user ${ctx.session.username} has offered a trade for one of your item listin
 
 They wish to trade their '${selectedTradeItem}' for your '${listingInfo.itemname}'.
 
+Your item listing: http://localhost:8080/item/${ctx.params.id}
+
 You can reach them at ${ctx.session.email} in order to discuss this trade further.
 
 Have a great day,
