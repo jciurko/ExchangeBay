@@ -2,13 +2,23 @@
 'use strict'
 
 const Listing = require('../modules/listing.js')
+const User = require('../modules/user.js')
+/* ShellJS inspiration taken from template acceptance test */
+const shell = require('shelljs')
+
+beforeAll( async () => {
+	await shell.exec('unitTests/scripts/beforeAll.sh')
+})
 
 describe('getMetadata()', () => {
 
 	test('get data from a valid listing', async done => {
 		expect.assertions(7)
+		const user = await new User('exchangebay-unittests.db')
 		const listing = await new Listing('exchangebay-unittests.db')
-		const data = await listing.getMetadata(3)
+		await user.register('doej', 'password', 'john', 'doe', 'johndoe@email.com')
+		await listing.create(1, 'item_name', 'item_description', 'img_location', 'swaplist')
+		const data = await listing.getMetadata(1)
 		expect(data).toHaveProperty('lister_id')
 		expect(data).toHaveProperty('id')
 		expect(data).toHaveProperty('itemname')
