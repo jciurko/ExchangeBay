@@ -150,6 +150,10 @@ router.post('/item/:id', async ctx => {
 
         const listingInfo = await listing.getMetadata(ctx.params.id)
 
+        if (listingInfo.user_id == selectedTradeItem.user_id) {
+            throw new Error('Cannot make an offer on an item you own')
+        }
+
         const user = await new User(dbName)
 
         const listerInfo = await user.getUserDataFromID(listingInfo.lister_id)
