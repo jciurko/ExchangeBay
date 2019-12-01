@@ -6,7 +6,7 @@ const User = require('../modules/user.js')
 /* ShellJS inspiration taken from template acceptance test */
 const shell = require('shelljs')
 
-beforeAll( async () => {
+beforeAll( async() => {
 	await shell.exec('unitTests/scripts/beforeAll.sh')
 })
 
