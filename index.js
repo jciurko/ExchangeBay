@@ -116,7 +116,6 @@ router.get('/item/:id', async ctx => {
         const data = await listing.getMetadata(parameters.id)
         data.ownListings = listingData
         data.authorised = ctx.session.authorised
-        data.usersItem = listingData[parameters.id].name.user_id == ctx.session.user_id
         await ctx.render('listing', data)
     } catch (err) {
         await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
