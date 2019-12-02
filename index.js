@@ -62,12 +62,15 @@ handlebars.registerPartial('postLoginHeader', postLoginHeader)
  * @route {GET} /
  */
 router.get('/', async ctx => {
+	let msg = false
+	/* Capitalisation method from Jean-François Corbett, on StackOverflow - https://stackoverflow.com/a/1026087 */
+	if (ctx.query.msg) msg = ctx.query.msg.charAt(0).toUpperCase() + ctx.query.msg.slice(1)
 	try {
 		const listing = await new Listing(dbName)
 		const listings = await listing.getListings()
-		await ctx.render('homepage', { listings: listings, authorised: ctx.session.authorised })
+		await ctx.render('homepage', { message: msg, listings: listings, authorised: ctx.session.authorised })
 	} catch (err) {
-		await ctx.render('homepage', { listings: [], authorised: ctx.session.authorised })
+		await ctx.render('homepage', { message: msg, listings: [], authorised: ctx.session.authorised })
 	}
 })
 
