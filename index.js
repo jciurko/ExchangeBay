@@ -298,9 +298,9 @@ router.get('/search', async ctx => {
 		for (let i = 0; i < searchResult.length; i++) {
 			items.push(searchResult[i])
 		}
-		await ctx.render('search', { searchResult: items })
+		await ctx.render('search', { authorised: ctx.session.authorised, searchResult: items })
 	} catch (err) {
-		await ctx.render('error', { message: err.message })
+		await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
 	}
 })
 
@@ -310,7 +310,7 @@ router.get('/restore_pass', async ctx => {
     try {
         await ctx.render('restore_pass')
     } catch (err) {
-        await ctx.render('error', { message: err.message })
+        await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
     }
 })
 
@@ -325,7 +325,7 @@ router.post('/restore_pass', koaBody, async ctx => {
 
         ctx.redirect(`/?msg=email has been sent"${body.item_name}" added`)
     } catch (err) {
-        await ctx.render('error', { message: err.message })
+        await ctx.render('error', { authorised: ctx.session.authorised, message: err.message })
     }
 })
 
