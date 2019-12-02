@@ -224,7 +224,12 @@ router.get('/logout', async ctx => {
 	ctx.redirect('/?msg=you are now logged out')
 })
 
-
+/**
+ * The listing creation page.
+ *
+ * @name Listing Creation Page
+ * @route {GET} /createAnOffer
+ */
 router.get('/createAnOffer', async ctx => {
 	try {
 		if (ctx.session.authorised !== true) throw new Error('You must log in')
@@ -234,6 +239,12 @@ router.get('/createAnOffer', async ctx => {
 	}
 })
 
+/**
+ * The listing creation script.
+ *
+ * @name Listing Creation Script
+ * @route {POST} /createAnOffer
+ */
 router.post('/createAnOffer', koaBody, async ctx => {
 	try {
 		const body = ctx.request.body
@@ -251,6 +262,12 @@ router.post('/createAnOffer', koaBody, async ctx => {
 	}
 })
 
+/**
+ * The account page.
+ *
+ * @name Account Page
+ * @route {GET} /accountPage
+ */
 router.get('/accountPage', async ctx => {
 	try {
 		if (ctx.session.authorised !== true) throw new Error('You must log in')
@@ -264,6 +281,12 @@ router.get('/accountPage', async ctx => {
 	}
 })
 
+/**
+ * The search page/script.
+ *
+ * @name Search Page/Script
+ * @route {GETs} /search
+ */
 router.get('/search', async ctx => {
 	try {
 
