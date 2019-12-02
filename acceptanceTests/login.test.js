@@ -1,3 +1,4 @@
+/* Inspired by template */
 'use strict'
 
 const puppeteer = require('puppeteer')
@@ -37,34 +38,31 @@ beforeEach(async() => {
 	await shell.exec('acceptanceTests/scripts/beforeEach.sh')
 })
 
-describe('Registering', () => {
+describe('Registering and logging in', () => {
 	test('Register a user', async done => {
-		//start generating a trace file.
-		await page.tracing.start({path: 'trace/registering_user_har.json',screenshots: true})
-		await har.start({path: 'trace/registering_user_trace.har'})
 		//ARRANGE
 		await page.goto('http://localhost:8080/register', { timeout: 30000, waitUntil: 'load' })
 		//ACT
-		await page.type('input[name=user]', 'NewUser')
+		await page.type('input[name=username]', 'NewUser')
+		await page.type('input[name=forename]', 'FirstName')
+		await page.type('input[name=surname]', 'Surname')
 		await page.type('input[name=pass]', 'password')
-		await page.click('input[type=submit]')
+		await page.type('input[name=email]', 'new.user@me.com')
+		await page.click('input[value=Create]')
 		await page.goto('http://localhost:8080/login', { timeout: 30000, waitUntil: 'load' })
-		await page.type('input[name=user]', 'NewUser')
+		await page.type('input[name=email]', 'new.user@me.com')
 		await page.type('input[name=pass]', 'password')
-		await page.click('input[type=submit]')
+		await page.click('input[value=Login]')
 		//ASSERT
 		//check that the user is taken to the homepage after attempting to login as the new user:
-		await page.waitForSelector('h1')
-		expect( await page.evaluate( () => document.querySelector('h1').innerText ) )
-			.toBe('Home')
+		await page.waitForSelector('.msg')
+		expect( await page.evaluate( () => document.querySelector('.msg').innerText ) )
+			.toBe('You are now logged in...')
 
 		// grab a screenshot
 		const image = await page.screenshot()
 		// compare to the screenshot from the previous test run
 		expect(image).toMatchImageSnapshot()
-		// stop logging to the trace files
-		await page.tracing.stop()
-		await har.stop()
 		done()
 	}, 16000)
 })
