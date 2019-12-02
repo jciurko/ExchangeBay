@@ -1,7 +1,5 @@
 'use strict'
 const nodemailer = require('nodemailer')
-const sqlite = require('sqlite-async')
-
 
 class Mailer {
 
@@ -27,10 +25,7 @@ class Mailer {
 		try {
 			const transporter = nodemailer.createTransport({
 				service: 'gmail',
-				auth: {
-					user: this.email,
-					pass: this.pass,
-				}
+				auth: { user: this.email, pass: this.pass }
 			})
 			const mailOptions = {
 				from: this.email,
@@ -38,12 +33,10 @@ class Mailer {
 				subject: subject,
 				text: message,
 			}
-			transporter.sendMail(mailOptions, (err, data) => {
-				if (err) {
-					throw err
-				} else {
-					console.log('Email sent!')
-				}
+			transporter.sendMail(mailOptions, (err) => {
+				if (err) throw err
+
+				console.log('Email sent!')
 
 			})
 		} catch (err) {
