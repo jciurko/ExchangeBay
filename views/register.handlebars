@@ -5,30 +5,18 @@
 		<link rel = "icon" href = "avatars/avatar.png" type = "image/png">
 		<meta charset="utf-8">
 		<title>Create an Account</title>
-		<meta name="description" content="form to create a new a">
-		<meta name="author" content="Not Mark Tyers">
+		<meta name="description" content="Registration Form">
+		<meta name="author" content="Jakub">
 		{{!-- <link href="css/register.css" type="text/css" rel="stylesheet" /> --}}
         <link href="css/style.css" type="text/css" rel="stylesheet" />
 
 	</head>
 	<body>
-        <section class="homepage">
-            <h1 class="homepage">
-                                <a href='/'>ExchangeBAY</a></h1>
-
-            <h2 class="homepage">Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
-
-            <nav class="homepage">
-                    <tc><button>
-                            <a href='login' >Login</a>
-                    </button></tc>
-                    <tc><button><a href = 'register'>Register</a> </button> </tc>
-                    <tc><button><a href = "about">About</a> </button></tc>
-            </nav>
-        
-        </section>
-        
-        </section>
+        {{#if authorised}}
+            {{>postLoginHeader}}
+    {{else}}
+            {{> header}}
+    {{/if}}
 		
 		<section class="reg-form">
 			<h1 class="register">E<a class="middle">xchange</a>BAY
@@ -47,5 +35,6 @@
 			<input type="submit"  class="myButton" value="Create"></p>	
 			</form>
 		</section>
+		<footer >       {{> footer}}        </footer>
 	</body>
 </html>

@@ -8,27 +8,15 @@
 	<meta name="description" content="form to add new books">
 	<meta name="author" content="Mark Tyers">
 	<link href="css/style.css" type="text/css" rel="stylesheet" />
-	<script src="js/login.js"></script>
+	<script src="/js/login.js"></script>
 </head>
 
 <body>
-	<header>
-		<section class="homepage">
-			<h1 class="homepage">
-                                <a href='/'>ExchangeBAY</a></h1>
-
-			<h2 class="homepage">Welcome to ExchangeBAY, the place to trade all of your valuable items!</h2>
-
-			<nav class="homepage">
-				<tc><button>
-						<a href='login' >Login</a>
-					</button></tc>
-				<tc><button><a href='register'>Register</a> </button> </tc>
-				<tc><button><a href="about">About</a> </button></tc>
-			</nav>
-
-		</section>
-	</header>
+	{{#if authorised}}
+            {{>postLoginHeader}}
+    {{else}}
+            {{> header}}
+    {{/if}}
 
 	<img src="https://via.placeholder.com/150" alt="Logo" id="log-logo">
 	<br/>
@@ -47,7 +35,7 @@
 	
 	<a href="problem">Trouble signing in?</a>
 	<a href="lostPassword">Forgot Password</a>
-
+	<footer >       {{> footer}}        </footer>
 </body>
 
 </html>
