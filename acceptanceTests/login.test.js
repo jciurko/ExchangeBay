@@ -3,7 +3,6 @@
 
 const puppeteer = require('puppeteer')
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot')
-const PuppeteerHar = require('puppeteer-har')
 const shell = require('shelljs')
 
 const width = 800
@@ -12,7 +11,6 @@ const delayMS = 5
 
 let browser
 let page
-let har
 
 // threshold is the difference in pixels before the snapshots dont match
 const toMatchImageSnapshot = configureToMatchImageSnapshot({
@@ -24,7 +22,6 @@ expect.extend({ toMatchImageSnapshot })
 beforeAll( async() => {
 	browser = await puppeteer.launch({ headless: true, slowMo: delayMS, args: [`--window-size=${width},${height}`] })
 	page = await browser.newPage()
-	har = new PuppeteerHar(page)
 	await page.setViewport({ width, height })
 	await shell.exec('acceptanceTests/scripts/beforeAll.sh')
 })
@@ -39,7 +36,7 @@ beforeEach(async() => {
 })
 
 describe('Registering and logging in', () => {
-	test('Register a user', async done => {
+	test('Register a user and then log in', async done => {
 		//ARRANGE
 		await page.goto('http://localhost:8080/register', { timeout: 30000, waitUntil: 'load' })
 		//ACT
