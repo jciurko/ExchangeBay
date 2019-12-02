@@ -1,8 +1,6 @@
 'use strict'
 
 const bcrypt = require('bcrypt-promise')
-// const fs = require('fs-extra')
-// const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
@@ -21,7 +19,10 @@ class User {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, password VARCHAR (60) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, email VARCHAR (50) NOT NULL);'
+			const sql = 'CREATE TABLE IF NOT EXISTS user \
+			(user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username VARCHAR (32) NOT NULL, \
+			password VARCHAR (60) NOT NULL, forename VARCHAR (32) NOT NULL, surname VARCHAR (32) NOT NULL, \
+			email VARCHAR (50) NOT NULL);'
 			await this.db.run(sql)
 			return this
 		})()
@@ -51,25 +52,18 @@ class User {
      */
 	async register(user, pass, forename, surname, email) {
 		try {
-
-
 			await this.errorIfEmpty(user, 'username')
 			await this.errorIfEmpty(pass, 'password')
 			await this.errorIfEmpty(forename, 'forename')
 			await this.errorIfEmpty(surname, 'surname')
 			await this.errorIfEmpty(email, 'email')
-			const patt1 = /[ ]/g // exclude <these> characters from username and password
-			/*if (user === '' || user.match(patt1) !== null) throw new Error('Username can\'t be empty') //async ctx => ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username') // new Error('Incorrect username') //return ctx.redirect('/register?msg=invalid%20username.%20Enter%20correct%20Username')
-			if (pass === '' || pass.match(patt1) !== null) throw new Error('Password can\'t be empty') //return ctx.redirect('/register?msg=invalid%20username.%20Password%20has%20to%20contain%20characters')*/
-			const sqlUser = `SELECT COUNT(user_id) as records FROM user WHERE username="${user}";`
-			const dataUser = await this.db.get(sqlUser)
+			const dataUser = await this.db.get(`SELECT COUNT(user_id) as records FROM user WHERE username="${user}";`)
 			if (dataUser.records !== 0) throw new Error(`username "${user}" already in use`)
-			const sqlEmail = `SELECT COUNT(user_id) as records FROM user WHERE email="${email}";`
-			const dataEmail = await this.db.get(sqlEmail)
+			const dataEmail = await this.db.get(`SELECT COUNT(user_id) as records FROM user WHERE email="${email}";`)
 			if (dataEmail.records !== 0) throw new Error(`email "${email}" already in use`)
 			pass = await bcrypt.hash(pass, saltRounds)
-			const sql = `INSERT INTO user(username, password, forename, surname, email) VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`
-			await this.db.run(sql)
+			await this.db.run(`INSERT INTO user(username, password, forename, surname, email) \
+				VALUES("${user}", "${pass}", "${forename}", "${surname}", "${email}")`)
 			return true
 		} catch (err) {
 			throw err

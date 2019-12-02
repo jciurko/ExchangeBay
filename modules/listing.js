@@ -18,7 +18,9 @@ class Listing {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS item (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, user_id INTEGER REFERENCES user (user_id) NOT NULL, item_name VARCHAR (50) NOT NULL, item_description VARCHAR (250) NOT NULL, item_img_loc VARCHAR (50) NOT NULL, swap VARCHAR(500) NOT NULL); CREATE TABLE IF NOT EXISTS trade (swap_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, buying_id INTEGER REFERENCES item (item_id) NOT NULL, selling_id INTEGER REFERENCES item (item_id) NOT NULL)'
+			const sql = 'CREATE TABLE IF NOT EXISTS item (item_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, \
+			user_id INTEGER REFERENCES user (user_id) NOT NULL, item_name VARCHAR (50) NOT NULL, \
+			item_description VARCHAR (250) NOT NULL, item_img_loc VARCHAR (50) NOT NULL, swap VARCHAR(500) NOT NULL);'
 			await this.db.run(sql)
 			return this
 		})()
@@ -68,29 +70,20 @@ class Listing {
      */
 	async getMetadata(listingId) {
 		try {
-			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE item_id="${listingId}";`
-			const data = await this.db.get(listingExistsSql)
+			const data = await this.db.get(`SELECT COUNT(item_id) as records FROM item WHERE item_id="${listingId}";`)
 			if(data.records === 0) throw new Error(`listing with ID "${listingId}" not found`)
-			const sql = `SELECT item_id, user_id, item_name, item_description, item_img_loc, swap FROM item WHERE item_id="${listingId}";`
-			const record = await this.db.get(sql)
+			const record = await this.db.get(`SELECT item_id, user_id, item_name, item_description, item_img_loc,\
+			 swap FROM item WHERE item_id="${listingId}";`)
 
 			const lister = record.user_id
 
-			if(record.swap === null) {
-				record.swap = 'Nothing provided.'
-			}
+			if(record.swap === null) record.swap = 'Nothing provided.'
 
-			const item = {
-				lister_id: lister,
-				id: record.item_id,
-				itemname: record.item_name,
-				itemdescription: record.item_description,
-				imgloc: record.item_img_loc,
-				swaplist: record.swap
-			}
+			const item = { lister_id: lister, id: record.item_id,
+				itemname: record.item_name, itemdescription: record.item_description,
+				imgloc: record.item_img_loc, swaplist: record.swap }
 
-			const usernameGrabSql = `SELECT username FROM user WHERE user_id="${lister}";`
-			const usernameRecord = await this.db.get(usernameGrabSql)
+			const usernameRecord = await this.db.get(`SELECT username FROM user WHERE user_id="${lister}";`)
 
 			item.listerusername = usernameRecord.username
 
@@ -110,9 +103,7 @@ class Listing {
 		try {
 			await this.errorIfEmpty(userID.toString(), 'user_id')
 			await this.errorIfNaN(userID, 'user_id')
-			if(parseInt(userID) < 1) {
-				throw new Error('invalid user id provided')
-			}
+			if(parseInt(userID) < 1) throw new Error('invalid user id provided')
 
 			const listingExistsSql = `SELECT COUNT(item_id) as records FROM item WHERE user_id="${userID}";`
 			const listingData = await this.db.get(listingExistsSql)
@@ -141,23 +132,17 @@ class Listing {
      */
 	async getListings() {
 		try {
-			const listingExistsSql = 'SELECT COUNT(item_id) as records FROM item;'
-			const data = await this.db.get(listingExistsSql)
+			const data = await this.db.get('SELECT COUNT(item_id) as records FROM item;')
 			if(data.records === 0) throw new Error('no listings found')
-			const sql = 'SELECT item_id, item_name, item_description, item_img_loc FROM item;'
 			const results = []
 
-			const rows = await this.db.all(sql)
+			const rows = await this.db.all('SELECT item_id, item_name, item_description, item_img_loc FROM item;')
 
 			for(let i = 0; i < rows.length; i++) {
 
-				const item = {
-					id: rows[i].item_id,
-					itemname: rows[i].item_name,
-					itemdescription: rows[i].item_description,
-					imgloc: rows[i].item_img_loc,
-					listerusername: '', //not viewable for logged out users
-					swaplist: '' //not viewable for logged out users
+				const item = { id: rows[i].item_id, itemname: rows[i].item_name,
+					itemdescription: rows[i].item_description, imgloc: rows[i].item_img_loc,
+					listerusername: '', swaplist: '' //not viewable for logged out users
 				}
 
 				results.push(item)
@@ -179,7 +164,8 @@ class Listing {
      */
 	async querySearchTerm(searchTerm) {
 
-		const sql = `SELECT item_id, item_name, item_description, item_img_loc, LOWER(item_name) as lowerItemName FROM item WHERE lowerItemName LIKE '%${searchTerm.toLowerCase()}%';`
+		const sql = `SELECT item_id, item_name, item_description, item_img_loc, LOWER(item_name) as lowerItemName\
+		 FROM item WHERE lowerItemName LIKE '%${searchTerm.toLowerCase()}%';`
 		const sqlResult = await this.db.all(sql)
 
 		const matchingItems = []
@@ -217,7 +203,8 @@ class Listing {
 			await this.errorIfEmpty(itemDescription, 'item_description')
 			await this.errorIfEmpty(imgLocation, 'img_location')
 
-			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc, swap) VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}', '${swapList}');`
+			const sql = `INSERT INTO item (user_id, item_name, item_description, item_img_loc, swap) \
+			VALUES (${userID}, '${itemName}', '${itemDescription}', '${imgLocation}', '${swapList}');`
 			const query = await this.db.run(sql)
 			return query.lastID
 		} catch(err) {
