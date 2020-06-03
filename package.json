@@ -1,5 +1,6 @@
 {
   "name": "10_auth",
+  "homepage": "https://jciurko.github.io/ExchangeBay",
   "version": "1.1.3",
   "description": "A simple dynamic website template to be used as the base for various projects",
   "main": "index.js",
@@ -23,7 +24,6 @@
     "bcrypt": "^3.0.7",
     "bcrypt-promise": "^2.0.0",
     "fs-extra": "^7.0.1",
-    "gh-pages": "^3.0.0",
     "handlebars": "^4.5.3",
     "koa": "^2.11.0",
     "koa-body": "^4.0.8",
@@ -43,6 +43,7 @@
     "dependency": "0.0.1",
     "dependency-check": "^4.1.0",
     "eslint": "^5.15.2",
+    "gh-pages": "^3.0.0",
     "handlebars-validate": "^0.1.2",
     "http-status-codes": "^1.3.2",
     "istanbul": "^0.4.5",
