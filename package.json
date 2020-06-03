@@ -13,7 +13,9 @@
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
     "test": "./node_modules/.bin/jest --coverage",
-    "acceptance": "acceptanceTests/scripts/test.sh"
+    "acceptance": "acceptanceTests/scripts/test.sh",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "bcrypt": "^3.0.7",
     "bcrypt-promise": "^2.0.0",
     "fs-extra": "^7.0.1",
+    "gh-pages": "^3.0.0",
     "handlebars": "^4.5.3",
     "koa": "^2.11.0",
     "koa-body": "^4.0.8",
