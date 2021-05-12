@@ -33,7 +33,7 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.5",
     "mime-types": "^2.1.22",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "nodemailer.js": "0.0.2-security",
     "sqlite": "^3.0.3",
     "sqlite-async": "^1.0.12"
